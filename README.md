@@ -1,9 +1,11 @@
-# tensorflow1
+# tensorflow_app
 TensorFlow Object Detection GUI Scripts
 
 **TensorFlow Graphical User Interface Guide (Windows)**
 
 **By: Mark Lundine**
+
+This guide is not up to date, will be updated soon.
 
 **I. Installation and Setup**
 
