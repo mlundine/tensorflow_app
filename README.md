@@ -25,15 +25,17 @@ Use 7-zip to unzip these files into C:\tensorflow_app\models\research\object_det
 
 To start the app, go to C:/tensorflow_app/gui and double click on TensorflowApplication.exe
 
-After a few seconds, the GUI will appear:
+After a few seconds (or even a minute, give it some time, it has a lot of stuff to unpack and your antivirus might be checking it), the GUI will appear:
 
 To make a new project, leave this button as is, and hit go.  This will bring up a dialog box where you can give your project a name.  This is a folder name so only use numbers, letters, and underscores.  No spaces or emojis.
 
 Once you have a good name, hit OK.  You should see at the top of the window Project Name: ______.
 
+For Faster R-CNN, leave the changeable button on this. For Mask R-CNN, change it to Mask R-CNN.
+
 **II. Annotating**
 
-If you have all of the photos you want to annotate as .jpgs, you are ready to start annotating. If you are using geotiffs with a single band (like digital elevation models), hit Convert Geotiffs to JPEGs (single band). This will open a dialog box which you can use to navigate to the folder containing all of your geotiffs. If your geotiffs are RGB, then use Convert Geotiffs to JPEGs. The new images will save in the folder C:\tensorflow1\models\research\object\_detection\implementation\jpegs. It will also convert your images to numpy arrays and save these to the folder C:\tensorflow1\models\research\object\_detection\implementation\numpy\_arrays.
+If you have all of the photos you want to annotate as .jpgs, you are ready to start annotating. If you are using geotiffs with a single band (like digital elevation models), hit Convert Geotiffs to JPEGs (single band). This will open a dialog box which you can use to navigate to the folder containing all of your geotiffs. If your geotiffs are RGB, then use Convert Geotiffs to JPEGs (RGB). The new images will save in the folder C:\tensorflow1\models\research\object\_detection\implementation\jpegs. It will also convert your images to numpy arrays and save these to the folder C:\tensorflow1\models\research\object\_detection\implementation\numpy\_arrays.
 
 Next, we need to randomize which images go into training (80% of images) and testing (20% of images). Click Set up training and testing data, and navigate to the folder containing all of your jpegs (if you used either of the previous buttons, the folder is C:\tensorflow_app\gui\YourProject\implementation\jpegs.
 
@@ -41,13 +43,15 @@ This will randomly select 80% of the photos for training and 20% of the photos f
 
 Next, you can start annotating. Click launch Labelimg. In this app, go to Open Directory, and select the train folder. Annotate each of your objects with a bounding box and a label. After each image is completely annotated, click save. This will create an xml file containing the coordinates for the annotations. Hit next image, and repeat. Keep in mind, every time you annotate an object, it should have exactly the same label (ex: only &#39;dog&#39;, not &#39;dog&#39; &#39;DOG&#39; &#39;Dog&#39;). Once you are done with the train folder, move onto the test folder. Once you are completely finished annotating all of the train and test photos, exit Labelimg. You can also exit the annotating section of the GUI at this point by hitting the Exit button.
 
+If you are trying to use Mask RCNN, you will also need to make png masks of your annotations.  These are images that you need to segment by the classes you are detecting.  For example if you were trying to detect cats and dogs, you would need to make a new image where all of the pixels that have dogs are given a certain value, all of the pixels with cats are given another value, and the rest of the pixels are zero.  These would be placed in the train_mask and test_mask folders.  In the future I will make some functions that can automate making the mask annotations.
+
 **III. Training**
 
 You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords.
 
 This will bring up a Notepad window.  You need to edit the section that says "TO DO".  This is your label map, which should have a unique integer for each class/label.  The else None statement needs to stay. Once this is complete, save the file, then close the Notepad window.
 
-Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects. Each object should have a unique integer id and a unique string name. Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training, making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
+Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects. Each object should have a unique integer id and a unique string name. Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training (or mrcnn_training if you are using Mask RCNN) making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
 
 Next, hit configure training. This will bring up Notepad. There are a few changes you need to make:
 
@@ -56,6 +60,8 @@ num_classes: 6
 Change this to match the number of classes your detector will have.
 
 fine_tune_checkpoint : "filepath/to/faster_rcnn_inception_v2_coco_2018_01_28"
+
+If you are using Mask RCNN it would be to the Mask RCNN model you downloaded.
 
 This filepath should be the full path to the model you downloaded and put in the object detection folder.  
 
@@ -79,7 +85,7 @@ num_examples: 67
 
 Change this to match the number of images in your test folder.
 
-Save this config file to /frcnn_training as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). Next, hit start training. In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
+Save this config file to /frcnn_training (or /mrcnn_training if you are doing Mask RCNN) as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). Next, hit start training. In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
 
 **IV. Implementation**
 
@@ -103,7 +109,7 @@ Next, hit Convert detection coordinates to geographic coordinates. This will cha
 
 Next, hit Make Shapefile. This will make a Shapefile that can be opened in GIS software to display the detections. You will need to define the projection in the GIS software. This will save to /results/gis.
 
-The next button if Get PR Curve.  This should be used after running the detector on all of the images in the test folder. So do that, and make sure it saves the result_bbox. 
+The next button is Get PR Curve.  This should be used after running the detector on all of the images in the test folder. So do that, and make sure it saves the result_bbox. 
 
 Next, hit Get PR Curve. In the first dialog box, select the result_bbox.csv sitting in results/bounding_boxes.
 
