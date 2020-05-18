@@ -3,6 +3,8 @@ TensorFlow Object Detection GUI Scripts
 
 **TensorFlow Graphical User Interface Guide (Windows)**
 
+![bayexample](/read_me_images/implement_gui.png)
+
 **By: Mark Lundine**
 
 **I. Installation and Setup**
