@@ -381,7 +381,7 @@ class Window(QMainWindow):
         options |= QFileDialog.DontUseNativeDialog
         folderName = str(QFileDialog.getExistingDirectory(self, "Select jpeg image directory"))
         if folderName:
-            dtf.randomize_images(folderName)
+            dtf.randomize_images(folderName, train_dir, test_dir)
     
     ## Main window buttons
     ## All the functions below are butttons that contain more buttons

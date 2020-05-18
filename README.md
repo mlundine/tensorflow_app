@@ -27,13 +27,23 @@ To start the app, go to C:/tensorflow_app/gui and double click on TensorflowAppl
 
 After a few seconds, the GUI will appear:
 
+![GUI Home](/read_me_images/GUI_home.PNG)
+
 To make a new project, leave this button as is, and hit go.  This will bring up a dialog box where you can give your project a name.  This is a folder name so only use numbers, letters, and underscores.  No spaces or emojis.
+
+![New Project](/read_me_images/new_project_naming.PNG)
 
 Once you have a good name, hit OK.  You should see at the top of the window Project Name: ______.
 
+This will make a new project directory in /tensorflow_app/gui
+
+![Project Folder](/read_me_images/project_in_dir.PNG)
+
 **II. Annotating**
 
-If you have all of the photos you want to annotate as .jpgs, you are ready to start annotating. If you are using geotiffs with a single band (like digital elevation models), hit Convert Geotiffs to JPEGs (single band). This will open a dialog box which you can use to navigate to the folder containing all of your geotiffs. If your geotiffs are RGB, then use Convert Geotiffs to JPEGs. The new images will save in the folder C:\tensorflow1\models\research\object\_detection\implementation\jpegs. It will also convert your images to numpy arrays and save these to the folder C:\tensorflow1\models\research\object\_detection\implementation\numpy\_arrays.
+![Annotating](/read_me_images/annotating_gui.PNG)
+
+If you have all of the photos you want to annotate as .jpgs, you are ready to start annotating. If you are using geotiffs with a single band (like digital elevation models), hit Convert Geotiffs to JPEGs (single band). This will open a dialog box which you can use to navigate to the folder containing all of your geotiffs. If your geotiffs are RGB, then use Convert Geotiffs to JPEGs. The new images will save in the folder C:\tensorflow_app\gui\YourProject\implementation\jpegs. It will also convert your images to numpy arrays and save these to the folder C:\tensorflow_app\gui\YourProject\implementation\numpy_arrays.
 
 Next, we need to randomize which images go into training (80% of images) and testing (20% of images). Click Set up training and testing data, and navigate to the folder containing all of your jpegs (if you used either of the previous buttons, the folder is C:\tensorflow_app\gui\YourProject\implementation\jpegs.
 
@@ -42,6 +52,8 @@ This will randomly select 80% of the photos for training and 20% of the photos f
 Next, you can start annotating. Click launch Labelimg. In this app, go to Open Directory, and select the train folder. Annotate each of your objects with a bounding box and a label. After each image is completely annotated, click save. This will create an xml file containing the coordinates for the annotations. Hit next image, and repeat. Keep in mind, every time you annotate an object, it should have exactly the same label (ex: only &#39;dog&#39;, not &#39;dog&#39; &#39;DOG&#39; &#39;Dog&#39;). Once you are done with the train folder, move onto the test folder. Once you are completely finished annotating all of the train and test photos, exit Labelimg. You can also exit the annotating section of the GUI at this point by hitting the Exit button.
 
 **III. Training**
+
+![Training](/read_me_images/training.PNG)
 
 You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords.
 
@@ -83,6 +95,8 @@ Save this config file to /frcnn_training as a .config file, not a .txt file, and
 
 **IV. Implementation**
 
+![Implementation](/read_me_images/implementation.PNG)
+
 First, change the threshold value to what you want your detector to run on (ex: 0.60 means the detector will only mark detections it is at least 60% confident in). Also change the number of classes to the number of classes your detector has.  Double check you have the correct number of classes before running single image or batch of images, otherwise, some errors will likely arise.
 
 If you want to run on a single image, hit single image, and then navigate to the image (.jpg). Once you hit open, the detection will execute and you should see the image with bounding boxes appear in the GUI. It will also save this image to C:/tensorflow_app/gui/YourProject/implementation/results/images.
@@ -96,6 +110,8 @@ C:/tensorflow_app/gui/YourProject/implementation/results/bounding_boxes.  This w
 Now you can hit Exit, and then go to Output Results.
 
 **V. Output Results**
+
+![Ouputs](/read_me_images/outputresults.PNG)
 
 If your original images were in a projected geographic coordinate system, hit Get raster coordinates and resolution. This will get the resolution and the four corner coordinates of each image and save it to a .csv file in geo\_bounding\_boxes.  You have to point it to the folder of the original rasters as geotiffs.
 
