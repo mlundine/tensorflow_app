@@ -15,6 +15,8 @@ Place the executable inside C:/tensorflow_app/gui
 
 In a web browser, go to [tensorflow model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md).
 
+![modelzoopic](/read_me_images/MODELZOO.png)
+
 Download these two models: 
 
 faster_rcnn_inception_v2_coco
