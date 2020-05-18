@@ -1,5 +1,4 @@
 # tensorflow_app
-TensorFlow Object Detection GUI Scripts
 
 **TensorFlow Graphical User Interface Guide (Windows)**
 
