@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 import shapefile
 import tensorflow as tf
-import gdal
+from osgeo import gdal
 import io
 import sys
 import generate_tfrecord_mask_app as gtfma

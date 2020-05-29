@@ -6,7 +6,7 @@ Created on Wed Apr  8 10:37:12 2020
 """
 import sys
 import os
-import gdal
+from osgeo import gdal
 import numpy as np
 import glob
 # =============================================================================
