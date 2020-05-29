@@ -110,10 +110,10 @@ from object_detection.protos import pipeline_pb2
 
 slim = tf.contrib.slim
 
-def main(pipelin_config_path, trained_checkpoint_prefix, output_directory):
+def main(pipeline_config_path, trained_checkpoint_prefix, output_directory):
   input_type = 'image_tensor'
   input_shape = None
-  config_overide = ''
+  config_override = ''
   write_inference_graph = False
   pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
   
