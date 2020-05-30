@@ -3,7 +3,6 @@ Usage:
   # From tensorflow/models/
   # Create train data:
   python generate_tfrecord.py --csv_input=images/train_labels.csv --image_dir=images/train --output_path=train.record
-
   # Create test data:
   python generate_tfrecord.py --csv_input=images/test_labels.csv  --image_dir=images/test --output_path=test.record
 """
@@ -19,25 +18,6 @@ import tensorflow as tf
 from PIL import Image
 from object_detection.utils import dataset_util
 from collections import namedtuple, OrderedDict
-
-
-# TO-DO replace this with label map
-def class_text_to_int(row_label):
-    if row_label == 'nine':
-        return 1
-    elif row_label == 'ten':
-        return 2
-    elif row_label == 'jack':
-        return 3
-    elif row_label == 'queen':
-        return 4
-    elif row_label == 'king':
-        return 5
-    elif row_label == 'ace':
-        return 6
-    else:
-        None
-
 
 def split(df, group):
     data = namedtuple('data', ['filename', 'object'])
@@ -67,7 +47,7 @@ def create_tf_example(group, path):
         ymins.append(row['ymin'] / height)
         ymaxs.append(row['ymax'] / height)
         classes_text.append(row['label'].encode('utf8'))
-        classes.append(class_text_to_int(row['label']))
+        classes.append(row['label_value'])
 
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': dataset_util.int64_feature(height),
@@ -98,5 +78,3 @@ def main(image_dir, csv_input, output_path):
     writer.close()
     output_path = output_path
     print('Successfully created the TFRecords: {}'.format(output_path))
-
-

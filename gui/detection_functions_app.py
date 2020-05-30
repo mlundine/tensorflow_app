@@ -24,7 +24,7 @@ import sys
 import generate_tfrecord_mask_app as gtfma
 import generate_tfrecord_app as gtfa
 import train_mod
-import export_inference_graph_mod
+#import export_inference_graph_mod
 
 
 ##write out necessary paths
@@ -183,6 +183,15 @@ def make_annotation_csvs(images_folder):
         ## changed 'class' to 'label'
         column_name = ['filename', 'width', 'height', 'label', 'xmin', 'ymin', 'xmax', 'ymax']
         xml_df = pd.DataFrame(xml_list, columns=column_name)
+        unique_labels = xml_df.label.unique()
+        label_ints = range(1, 1+len(unique_labels))
+        label_map = dict(zip(unique_labels,label_ints))
+        label_values = []
+        for i in range(len(xml_df.label)):
+            key = xml_df.iloc[i, 3]
+            val = label_map[key]
+            label_values.append(val)
+        xml_df['label_value'] = label_values
         return xml_df
 
 
@@ -196,6 +205,7 @@ def make_annotation_csvs(images_folder):
     do_both()
     
 def make_tf_records(images_folder):
+    
     train_images = os.path.join(images_folder, 'train')
     test_images = os.path.join(images_folder, 'test')
     train_labels = os.path.join(images_folder, 'train_labels.csv')
@@ -203,9 +213,6 @@ def make_tf_records(images_folder):
     train_tfr = os.path.join(images_folder, 'frcnn_records', 'train.record')
     test_tfr = os.path.join(images_folder, 'frcnn_records', 'test.record')
     
-    cmd2 = r'cd ' + object_detection_path_mod
-    cmd3 = r'notepad generate_tfrecord_app.py'
-    os.system(cmd2 + r'&&' + cmd3)
     gtfa.main(train_images, train_labels, train_tfr)
     gtfa.main(test_images, test_labels, test_tfr)
 
@@ -220,9 +227,6 @@ def make_tf_records_mask(images_folder):
     train_tfr = os.path.join(images_folder, 'mrcnn_records', 'train.record')
     test_tfr = os.path.join(images_folder, 'mrcnn_records', 'test.record')
 
-    cmd2 = r'cd ' + object_detection_path_mod
-    cmd3 = r'notepad generate_tfrecord_mask_app.py'
-    os.system(cmd2 + r'&&' + cmd3)
     gtfma.main(train_images, train_mask_images, train_labels, train_tfr)
     gtfma.main(test_images, test_mask_images, test_labels, test_tfr)
 

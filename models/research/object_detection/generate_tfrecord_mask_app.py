@@ -21,14 +21,6 @@ from PIL import Image
 from object_detection.utils import dataset_util
 from collections import namedtuple, OrderedDict
 
-# TO-DO replace this with label map
-def class_text_to_int(row_label):
-    if row_label == 'dune':
-        return 1
-    else:
-        None
-
-
 def split(df, group):
     data = namedtuple('data', ['filename', 'object'])
     gb = df.groupby(group)
@@ -68,7 +60,7 @@ def create_tf_example(group, path, mask_path):
         ymins.append(row['ymin'] / height)
         ymaxs.append(row['ymax'] / height)
         classes_text.append(row['label'].encode('utf8'))
-        classes.append(class_text_to_int(row['label']))
+        classes.append(row['label_value'])
         mask_remapped = (mask_np != 0).astype(np.uint8)
         masks.append(mask_remapped)
     feature_dict={
