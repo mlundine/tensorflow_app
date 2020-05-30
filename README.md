@@ -64,17 +64,15 @@ If you are trying to use Mask RCNN, you will also need to make png masks of your
 
 You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords.
 
-This will bring up a Notepad window.  You need to edit the section that says "TO DO".  This is your label map, which should have a unique integer for each class/label.  The else None statement needs to stay. Once this is complete, save the file, then close the Notepad window.
+Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects (so change name and value). Each object should have a unique integer id and a unique string name. Check your train_labels.csv file to see what integer id each label was given.  If you are only building a one class detector, then the id for your class will be 1.  Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training (or mrcnn_training if you are using Mask RCNN) making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
 
-Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects. Each object should have a unique integer id and a unique string name. Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training (or mrcnn_training if you are using Mask RCNN) making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
-
-Next, hit configure training. This will bring up Notepad. There are a few changes you need to make:
+Next, hit configure training. This will bring up Notepad. There are a few changes you need to make.  For the changes that require filepaths, USE FORWARD SLASHES '/'.  When you copy the path in file explorer, Windows will make them backslashes '\'.  Make sure you change them to forward slashes:
 
 num_classes: 6
 
 Change this to match the number of classes your detector will have.
 
-fine_tune_checkpoint : "filepath/to/faster_rcnn_inception_v2_coco_2018_01_28"
+fine_tune_checkpoint : "fullfilepath/to/faster_rcnn_inception_v2_coco_2018_01_28"
 
 If you are using Mask RCNN it would be to the Mask RCNN model you downloaded.
 
