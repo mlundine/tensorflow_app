@@ -62,7 +62,7 @@ If you are trying to use Mask RCNN, you will also need to make png masks of your
 
 ![Training](/read_me_images/training.PNG)
 
-You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords.
+You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords.  This will save two csvs containing the annotations for the test and train datasets in C:\tensorflow_app\gui\YourProject\images.  It will also save two tf record files in C:\tensorflow_app\gui\YourProject\images\frcnn_records (or mrcnn_records if you are using Mask R-CNN).
 
 Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects (so change name and value). Each object should have a unique integer id and a unique string name. Check your train_labels.csv file to see what integer id each label was given.  If you are only building a one class detector, then the id for your class will be 1.  Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training (or mrcnn_training if you are using Mask RCNN) making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
 
