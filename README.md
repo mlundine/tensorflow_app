@@ -72,7 +72,7 @@ num_classes: 6
 
 Change this to match the number of classes your detector will have.
 
-fine_tune_checkpoint : "fullfilepath/to/faster_rcnn_inception_v2_coco_2018_01_28"
+fine_tune_checkpoint : "fullfilepath/to/faster_rcnn_inception_v2_coco_2018_01_28/model.ckpt"
 
 If you are using Mask RCNN it would be to the Mask RCNN model you downloaded.
 
