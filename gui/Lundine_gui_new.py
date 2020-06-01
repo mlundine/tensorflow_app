@@ -277,11 +277,11 @@ class Window(QMainWindow):
         folderName = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         if folderName:
             if str(modelButton.currentText()) == 'Faster R-CNN':
-                object_detection_tf.main(project_dir, 'batch', fileName, float(thresh), int(classes), 'faster')
+                object_detection_tf.main(project_dir, 'batch', folderName, float(thresh), int(classes), 'faster')
                 buttons = [button]
                 button.clicked.connect(lambda: self.exit_buttons(buttons))
             else:
-                object_detection_tf.main(project_dir, 'batch', fileName, float(thresh), int(classes), 'mask')
+                object_detection_tf.main(project_dir, 'batch', folderName, float(thresh), int(classes), 'mask')
                 buttons = [button]
                 button.clicked.connect(lambda: self.exit_buttons(buttons))                
     
