@@ -129,7 +129,7 @@ def detection_function(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJECT):
             boxes = np.squeeze(boxes)
             scores = np.squeeze(scores)
             classes = np.squeeze(classes)
-            min_score_thresh = threshold
+            min_score_thresh = 0
             bboxes = boxes[scores>min_score_thresh]
             scores = scores[scores>min_score_thresh]
             im_width, im_height = image.shape[0:2]
