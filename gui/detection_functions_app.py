@@ -24,7 +24,7 @@ import sys
 import generate_tfrecord_mask_app as gtfma
 import generate_tfrecord_app as gtfa
 import train_mod
-#import export_inference_graph_mod
+import export_inference_graph_mod
 
 
 ##write out necessary paths
