@@ -18,11 +18,13 @@ In a web browser, go to [tensorflow model zoo](https://github.com/tensorflow/mod
 
 ![modelzoopic](/read_me_images/MODELZOO.png)
 
-Download these two models: 
+Download these three models (or just one): 
 
 faster_rcnn_inception_v2_coco
 
 mask_rcnn_resnet101_atrous_coco
+
+ssd_mobilenet_v1_ppn_coco
 
 Use 7-zip to unzip these files into C:\tensorflow_app\models\research\object_detection
 
