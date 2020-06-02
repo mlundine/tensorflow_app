@@ -62,9 +62,11 @@ class Window(QMainWindow):
         print(annotation_images_dir)
         dtf.make_annotation_csvs(annotation_images_dir)
         if str(modelButton.currentText()) == 'Faster R-CNN':
-            dtf.make_tf_records(annotation_images_dir)
-        else:
+            dtf.make_tf_records(annotation_images_dir, 'faster')
+        elif str(modelButton.currentText()) == 'Mask R-CNN':
             dtf.make_tf_records_mask(annotation_images_dir)
+        else:
+            dtf.make_tf_records(annotation_images_dir, 'ssd')
         button.setEnabled(False)
     
     ## Opens up notepad so you can edit the label map
@@ -76,25 +78,30 @@ class Window(QMainWindow):
     def configTraining_button(self,button, modelButton):
         if str(modelButton.currentText()) == 'Faster R-CNN':
             dtf.configure_training('faster')
-        else:
+        elif str(modelButton.currentText()) == 'Mask R-CNN':
             dtf.configure_training('mask')
+        else:
+            dtf.configure_training('ssd')
         button.setEnabled(False)
     
     ## Starts the training, must be terminated with ctrl+c in the anaconda prompt
     def startTraining_button(self, modelButton):
         if str(modelButton.currentText()) == 'Faster R-CNN':
             dtf.train(project_dir, 'faster')
-        else:
+        elif str(modelButton.currentText()) == 'Mask R-CNN':
             dtf.train(project_dir, 'mask')
+        else:
+            dtf.train(project_dir, 'ssd')
         
     
     ## Exports the inference graph, needs the highest checkpoint number
     def exportGraph_button(self, ckpt, modelButton):
         if str(modelButton.currentText()) == 'Faster R-CNN':
             dtf.make_inference_graph(ckpt, project_dir, 'faster')
-        else:
+        elif str(modelButton.currentText()) == 'Mask R-CNN':
             dtf.make_inference_graph(ckpt, project_dir, 'mask')
-        
+        else:
+            dtf.make_inference_graph(ckpt, project_dir, 'ssd')
     ## downloads all of the necessary libraries and makes tensorflow1
     ## and gdal1 anaconda envs, once clicked, setup is disabled and check setup is enabled
     def setup_button(self, button_item, goButton):
@@ -154,8 +161,10 @@ class Window(QMainWindow):
         #two folders for tfrecords, mask and faster
         global frcnn_records
         global mrcnn_records
+        global ssd_records
         frcnn_records = os.path.join(project_dir, 'images', 'frcnn_records')
         mrcnn_records = os.path.join(project_dir, 'images', 'mrcnn_records')
+        ssd_records = os.path.join(project_dir, 'images', 'ssd_records')
         #one folder for implementation
         global implementation_dir 
         implementation_dir = os.path.join(project_dir, 'implementation')
@@ -186,13 +195,17 @@ class Window(QMainWindow):
         #two folders for inference graphs, mask and faster
         global frcnn_inference_dir
         global mrcnn_inference_dir
+        global ssd_inference_dir
         frcnn_inference_dir = os.path.join(project_dir, 'frcnn_inference_graph')
         mrcnn_inference_dir = os.path.join(project_dir, 'mrcnn_inference_graph')
+        ssd_inference_dir = os.path.join(project_dir, 'ssd_inference_graph')
         #two folders for training, mask and faster
         global frcnn_training_dir
         global mrcnn_training_dir
+        global ssd_training_dir
         frcnn_training_dir = os.path.join(project_dir, 'frcnn_training')
         mrcnn_training_dir = os.path.join(project_dir, 'mrcnn_training')
+        ssd_training_dir = os.path.join(project_dir, 'ssd_training')
         
         
         
@@ -212,10 +225,13 @@ class Window(QMainWindow):
             os.makedirs(pr_dir)
             os.makedirs(frcnn_inference_dir)
             os.makedirs(mrcnn_inference_dir)
+            os.makedirs(ssd_inference_dir)
             os.makedirs(frcnn_training_dir)
             os.makedirs(mrcnn_training_dir)
+            os.makedirs(ssd_training_dir)
             os.makedirs(mrcnn_records)
             os.makedirs(frcnn_records)
+            os.makedirs(ssd_records)
             os.makedirs(mask_results)
             os.makedirs(result_images_dir)
             
@@ -223,7 +239,7 @@ class Window(QMainWindow):
             pass
 
 
-    
+    ##TO DO  
     ## runs detection on a single image, displays the result in gui window
     ## gets threshold and number of classes from the gui sliders
     def singleImage_button(self, thresh, classes, button, modelButton):
@@ -233,6 +249,25 @@ class Window(QMainWindow):
         if fileName:
             if str(modelButton.currentText()) == 'Faster R-CNN':
                 object_detection_tf.main(project_dir, 'single', fileName, float(thresh), int(classes), 'faster')
+                detect_im = os.path.join(result_images_dir, os.path.splitext(os.path.basename(fileName))[0])            
+                label = QLabel(self)
+                pixmap = QPixmap(detect_im)
+                scaleFac = 1
+                logical1 = 300 + (pixmap.width()/scaleFac) >= screenWidth-300
+                logical2 = 50 + (pixmap.height()/scaleFac) >= screenHeight-50
+                while (logical1 or logical2):
+                    scaleFac = scaleFac + 1
+                    logical1 = 300 + (pixmap.width()/scaleFac) >= screenWidth-300
+                    logical2 = 50 + (pixmap.height()/scaleFac) >= screenHeight-50
+                small_pixmap = pixmap.scaled(int(pixmap.width()/scaleFac), int(pixmap.height()/scaleFac))
+                label.setPixmap(small_pixmap)
+                label.move(300,50)
+                label.resize(int(pixmap.width()/scaleFac),int(pixmap.height()/scaleFac))
+                label.show()
+                buttons = [label, button]
+                button.clicked.connect(lambda: self.exit_buttons(buttons))
+            elif str(modelButton.currentText()) == 'SSD Mobilenet':
+                object_detection_tf.main(project_dir, 'single', fileName, float(thresh), int(classes), 'ssd')
                 detect_im = os.path.join(result_images_dir, os.path.splitext(os.path.basename(fileName))[0])            
                 label = QLabel(self)
                 pixmap = QPixmap(detect_im)
@@ -269,7 +304,7 @@ class Window(QMainWindow):
                 label.show()
                 buttons = [label, button]
                 button.clicked.connect(lambda: self.exit_buttons(buttons))
-    
+    #TO DO
     ## runs detection on a batch of images
     ## gets the threshold and number of classes from the gui sliders
     def batch_button(self, thresh, classes, button, modelButton):
@@ -281,6 +316,10 @@ class Window(QMainWindow):
                 object_detection_tf.main(project_dir, 'batch', folderName, float(thresh), int(classes), 'faster')
                 buttons = [button]
                 button.clicked.connect(lambda: self.exit_buttons(buttons))
+            elif str(modelButton.currentText()) == 'SSD Mobilenet':
+                object_detection_tf.main(project_dir, 'batch', folderName, float(thresh), int(classes), 'ssd')
+                buttons = [button]
+                button.clicked.connect(lambda: self.exit_buttons(buttons))                
             else:
                 object_detection_tf.main(project_dir, 'batch', folderName, float(thresh), int(classes), 'mask')
                 buttons = [button]
@@ -288,6 +327,8 @@ class Window(QMainWindow):
     def videoCam_button(self, thresh, classes, button, modelButton):
         if str(modelButton.currentText()) == 'Faster R-CNN':
             object_detection_real_time.main('faster', thresh, classes, project_dir)
+        elif str(modelButton.currentText()) == 'SSD Mobilenet':
+            object_detection_real_time.main('ssd', thresh, classes, project_dir)
         else:
             object_detection_real_time.main('mask', thresh, classes, project_dir)
     
@@ -563,6 +604,7 @@ class Window(QMainWindow):
         maskBox = QComboBox(self)
         maskBox.addItem('Faster R-CNN')
         maskBox.addItem('Mask R-CNN')
+        maskBox.addItem('SSD Mobilenet')
         maskBox.resize(100,50)
         maskBox.move(0, 100)
         

@@ -25,7 +25,7 @@ obj_det = os.path.join(root, 'tensorflow_app', 'models', 'research', 'object_det
 
 
 
-def detection_function(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJECT):
+def detection_function(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJECT, MODEL):
     root_mod = os.path.abspath(os.sep)
     obj_det_mod = os.path.join(root_mod, 'tensorflow_app', 'models', 'research', 'object_detection')
     
@@ -34,11 +34,15 @@ def detection_function(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJECT):
     
     # Path to frozen detection graph .pb file, which contains the model that is used
     # for object detection.
-    PATH_TO_CKPT = os.path.join(PROJECT, 'frcnn_inference_graph', 'frozen_inference_graph.pb')    
-    
+    if MODEL == 'faster':
+        PATH_TO_CKPT = os.path.join(PROJECT, 'frcnn_inference_graph', 'frozen_inference_graph.pb')    
+    else:
+        PATH_TO_CKPT = os.path.join(PROJECT, 'ssd_inference_graph', 'frozen_inference_graph.pb')   
     # Path to label map file
-    PATH_TO_LABELS = os.path.join(PROJECT, 'frcnn_training', 'labelmap.pbtxt')
-    
+    if MODEL == 'faster':
+        PATH_TO_LABELS = os.path.join(PROJECT, 'frcnn_training', 'labelmap.pbtxt')
+    else:
+        PATH_TO_LABELS = os.path.join(PROJECT, 'ssd_training', 'labelmap.pbtxt')
     #Path to save the images with detection results
     PATH_TO_SAVE_IMAGES = os.path.join(PROJECT, 'implementation', 'results', 'images')
 
@@ -378,7 +382,9 @@ def main(project, batch, path_to_ims, threshold, numberOfClasses, mask):
     threshold = float(threshold)
     numberOfClasses = int(numberOfClasses)
     if mask == 'faster':
-        a=detection_function(batch, path_to_ims, threshold, numberOfClasses, project)
+        a=detection_function(batch, path_to_ims, threshold, numberOfClasses, project, 'faster')
+    elif mask == 'ssd':
+        a = detection_function(batch, path_to_ims, threshold, numberOfClasses, project, 'ssd')
     else:
         a = detection_function_mask(batch, path_to_ims, threshold, numberOfClasses, project)
 

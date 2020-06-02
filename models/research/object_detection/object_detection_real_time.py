@@ -14,14 +14,16 @@ root = os.path.abspath(os.sep)
 global obj_det
 obj_det = os.path.join(root, 'tensorflow_app', 'models', 'research', 'object_detection')
 
-def detection_function_frcnn(THRESHOLD, NUM_CLASSES, PROJECT):
+def detection_function_box(THRESHOLD, NUM_CLASSES, PROJECT, MODEL):
     root_mod = os.path.abspath(os.sep)
     obj_det_mod = os.path.join(root_mod, 'tensorflow_app', 'models', 'research', 'object_detection')
 
-    PATH_TO_CKPT = os.path.join(PROJECT, 'frcnn_inference_graph', 'frozen_inference_graph.pb')
-
-    PATH_TO_LABELS = os.path.join(PROJECT, 'frcnn_training', 'labelmap.pbtxt')
-
+    if MODEL == 'faster':
+        PATH_TO_CKPT = os.path.join(PROJECT, 'frcnn_inference_graph', 'frozen_inference_graph.pb')
+        PATH_TO_LABELS = os.path.join(PROJECT, 'frcnn_training', 'labelmap.pbtxt')
+    else:
+        PATH_TO_CKPT = os.path.join(PROJECT, 'ssd_inference_graph', 'frozen_inference_graph.pb')
+        PATH_TO_LABELS = os.path.join(PROJECT, 'ssd_training', 'labelmap.pbtxt')
     ## Load the label map.
     # Label maps map indices to category names, so that when our convolution
     # network predicts `5`, we know that this corresponds to `king`.
@@ -216,6 +218,8 @@ def detection_function_mrcnn(THRESHOLD, NUM_CLASSES, PROJECT):
 
 def main(MODEL, THRESHOLD, NUM_CLASSES, PROJECT):
     if MODEL == 'faster':
-        detection_function_frcnn(THRESHOLD, NUM_CLASSES, PROJECT)
+        detection_function_box(THRESHOLD, NUM_CLASSES, PROJECT, 'faster')
+    elif MODEL == 'ssd':
+        detection_function_box(THRESHOLD, NUM_CLASSES, PROJECT, 'ssd')
     else:
         detection_function_mrcnn(THRESHOLD, NUM_CLASSES, PROJECT)

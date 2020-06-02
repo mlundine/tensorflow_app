@@ -142,29 +142,29 @@ def randomize_images(folder, train_path, test_path):
             im.close()
         pct = i/len(image_list)
     
-def set_python_path():
-    cmd2 = set_py_path_mod
-    os.system(cmd2)
-    
-    
-def make_protobufs():
-    cmd2 = r'cd ' + research_path_mod
-    cmd3 = r'protoc --python_out=. .\object_detection\protos\anchor_generator.proto .\object_detection\protos\argmax_matcher.proto .\object_detection\protos\bipartite_matcher.proto .\object_detection\protos\box_coder.proto .\object_detection\protos\box_predictor.proto .\object_detection\protos\eval.proto .\object_detection\protos\faster_rcnn.proto .\object_detection\protos\faster_rcnn_box_coder.proto .\object_detection\protos\grid_anchor_generator.proto .\object_detection\protos\hyperparams.proto .\object_detection\protos\image_resizer.proto .\object_detection\protos\input_reader.proto .\object_detection\protos\losses.proto .\object_detection\protos\matcher.proto .\object_detection\protos\mean_stddev_box_coder.proto .\object_detection\protos\model.proto .\object_detection\protos\optimizer.proto .\object_detection\protos\pipeline.proto .\object_detection\protos\post_processing.proto .\object_detection\protos\preprocessor.proto .\object_detection\protos\region_similarity_calculator.proto .\object_detection\protos\square_box_coder.proto .\object_detection\protos\ssd.proto .\object_detection\protos\ssd_anchor_generator.proto .\object_detection\protos\string_int_label_map.proto .\object_detection\protos\train.proto .\object_detection\protos\keypoint_box_coder.proto .\object_detection\protos\multiscale_anchor_generator.proto .\object_detection\protos\graph_rewriter.proto .\object_detection\protos\calibration.proto .\object_detection\protos\flexible_grid_anchor_generator.proto'
-    os.system(cmd2 + r'&&' + cmd3)
-
-def run_setup_py():
-    cmd2 = r'cd ' + research_path_mod
-    cmd3 = r'python setup.py build'
-    cmd4 = r'python setup.py install'
-    os.system(cmd2 + r'&&' + cmd3 + r'&&' + cmd4)
-    
-def check_setup():
-    cmd2 = r'cd C:\tensorflow1\models\research\object_detection'
-    cmd3 = r'jupyter notebook object_detection_tutorial.ipynb'
-    os.system(cmd2 + r'&&' + cmd3)
+##def set_python_path():
+##    cmd2 = set_py_path_mod
+##    os.system(cmd2)
+##    
+##    
+##def make_protobufs():
+##    cmd2 = r'cd ' + research_path_mod
+##    cmd3 = r'protoc --python_out=. .\object_detection\protos\anchor_generator.proto .\object_detection\protos\argmax_matcher.proto .\object_detection\protos\bipartite_matcher.proto .\object_detection\protos\box_coder.proto .\object_detection\protos\box_predictor.proto .\object_detection\protos\eval.proto .\object_detection\protos\faster_rcnn.proto .\object_detection\protos\faster_rcnn_box_coder.proto .\object_detection\protos\grid_anchor_generator.proto .\object_detection\protos\hyperparams.proto .\object_detection\protos\image_resizer.proto .\object_detection\protos\input_reader.proto .\object_detection\protos\losses.proto .\object_detection\protos\matcher.proto .\object_detection\protos\mean_stddev_box_coder.proto .\object_detection\protos\model.proto .\object_detection\protos\optimizer.proto .\object_detection\protos\pipeline.proto .\object_detection\protos\post_processing.proto .\object_detection\protos\preprocessor.proto .\object_detection\protos\region_similarity_calculator.proto .\object_detection\protos\square_box_coder.proto .\object_detection\protos\ssd.proto .\object_detection\protos\ssd_anchor_generator.proto .\object_detection\protos\string_int_label_map.proto .\object_detection\protos\train.proto .\object_detection\protos\keypoint_box_coder.proto .\object_detection\protos\multiscale_anchor_generator.proto .\object_detection\protos\graph_rewriter.proto .\object_detection\protos\calibration.proto .\object_detection\protos\flexible_grid_anchor_generator.proto'
+##    os.system(cmd2 + r'&&' + cmd3)
+##
+##def run_setup_py():
+##    cmd2 = r'cd ' + research_path_mod
+##    cmd3 = r'python setup.py build'
+##    cmd4 = r'python setup.py install'
+##    os.system(cmd2 + r'&&' + cmd3 + r'&&' + cmd4)
+##    
+##def check_setup():
+##    cmd2 = r'cd C:\tensorflow1\models\research\object_detection'
+##    cmd3 = r'jupyter notebook object_detection_tutorial.ipynb'
+##    os.system(cmd2 + r'&&' + cmd3)
     
 def make_annotation_csvs(images_folder):
-    def xml_to_csv(path):
+    def xml_to_csv(path, label_map):
         xml_list = []
         for xml_file in glob.glob(path + '/*.xml'):
             tree = ET.parse(xml_file)
@@ -183,40 +183,48 @@ def make_annotation_csvs(images_folder):
         ## changed 'class' to 'label'
         column_name = ['filename', 'width', 'height', 'label', 'xmin', 'ymin', 'xmax', 'ymax']
         xml_df = pd.DataFrame(xml_list, columns=column_name)
-        unique_labels = xml_df.label.unique()
-        label_ints = range(1, 1+len(unique_labels))
-        label_map = dict(zip(unique_labels,label_ints))
+        if label_map == 'Fake':
+            unique_labels = xml_df.label.unique()
+            label_ints = range(1, 1+len(unique_labels))
+            label_map = dict(zip(unique_labels,label_ints))
         label_values = []
         for i in range(len(xml_df.label)):
             key = xml_df.iloc[i, 3]
             val = label_map[key]
             label_values.append(val)
         xml_df['label_value'] = label_values
-        return xml_df
+        return xml_df, label_map
 
 
     def do_both():
-        for folder in ['train','test']:
-            image_path = os.path.join(images_folder, folder)
-            xml_df = xml_to_csv(image_path)
-            xml_df.to_csv((os.path.join(images_folder,folder + '_labels.csv')), index=None)
-            print('Successfully converted xml to csv.')
+        train_image_path = os.path.join(images_folder, 'train')
+        test_image_path = os.path.join(images_folder, 'test')
+        
+        train_xml_df, label_map = xml_to_csv(train_image_path, 'Fake')
+        train_xml_df.to_csv(os.path.join(images_folder, 'train_labels.csv'), index=None)
+        
+        test_xml_df, label_map = xml_to_csv(test_image_path, label_map)
+        test_xml_df.to_csv(os.path.join(images_folder, 'test_labels.csv'), index=None)
 
     do_both()
     
-def make_tf_records(images_folder):
+def make_tf_records(images_folder, model):
     
     train_images = os.path.join(images_folder, 'train')
     test_images = os.path.join(images_folder, 'test')
     train_labels = os.path.join(images_folder, 'train_labels.csv')
     test_labels = os.path.join(images_folder, 'test_labels.csv')
-    train_tfr = os.path.join(images_folder, 'frcnn_records', 'train.record')
-    test_tfr = os.path.join(images_folder, 'frcnn_records', 'test.record')
+    if model == 'faster':
+        train_tfr = os.path.join(images_folder, 'frcnn_records', 'train.record')
+        test_tfr = os.path.join(images_folder, 'frcnn_records', 'test.record')
+    else:
+        train_tfr = os.path.join(images_folder, 'ssd_records', 'train.record')
+        test_tfr = os.path.join(images_folder, 'ssd_records', 'test.record')
     
     gtfa.main(train_images, train_labels, train_tfr)
     gtfa.main(test_images, test_labels, test_tfr)
 
-##this needs to be tested
+
 def make_tf_records_mask(images_folder):
     train_images = os.path.join(images_folder, 'train')
     train_mask_images = os.path.join(images_folder, 'train_mask')
@@ -243,19 +251,27 @@ def configure_training(model_type):
         configPath = os.path.join(object_detection_path_mod, 'training', 'faster_rcnn_inception_v2_pets.config')
         cmd2 = r'notepad ' + configPath
         os.system(cmd2)
-    else:
+    elif model_type == 'mask':
         configPath = os.path.join(object_detection_path_mod, 'training', 'mask_rcnn_resnet101_atrous_coco.config')
         cmd2 = r'notepad ' + configPath
-        os.system(cmd2)        
-    
+        os.system(cmd2)
+    else:
+        configPath = os.path.join(object_detection_path_mod, 'training', 'ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync.config')
+        cmd2 = r'notepad ' + configPath
+        os.system(cmd2)
+        
 def train(project_path, model_type):
     if model_type == 'faster':
         trainingdir = os.path.join(project_path, 'frcnn_training')
         configpath = os.path.join(project_path, 'frcnn_training', 'faster_rcnn_inception_v2_pets.config')
         train_mod.main(trainingdir, configpath)
-    else:
+    elif model_type == 'mask':
         trainingdir = os.path.join(project_path, 'mrcnn_training')
         configpath = os.path.join(project_path, 'mrcnn_training', 'mask_rcnn_resnet101_atrous_coco.config')
+        train_mod.main(trainingdir, configpath)
+    else:
+        trainingdir = os.path.join(project_path, 'ssd_training')
+        configpath = os.path.join(project_path, 'ssd_training', 'ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync.config')
         train_mod.main(trainingdir, configpath)
        
 def make_inference_graph(ckpt_num, project_path, model_type):
@@ -264,11 +280,16 @@ def make_inference_graph(ckpt_num, project_path, model_type):
         configpath = os.path.join(project_path, 'frcnn_training', 'faster_rcnn_inception_v2_pets.config')
         infgraphdir = os.path.join(project_path, 'frcnn_inference_graph')
         export_inference_graph_mod.main(configpath, trainingdir, infgraphdir)
-    else:
+    elif model_type == 'mask':
         trainingdir = os.path.join(project_path, 'mrcnn_training', 'model.ckpt-'+str(ckpt_num))
         configpath = os.path.join(project_path, 'mrcnn_training', 'mask_rcnn_resnet101_atrous_coco.config')
         infgraphdir = os.path.join(project_path, 'mrcnn_inference_graph')
         export_inference_graph_mod.main(configpath, trainingdir, infgraphdir)
+    else:
+        trainingdir = os.path.join(project_path, 'ssd_training', 'model.ckpt-'+str(ckpt_num))
+        configpath = os.path.join(project_path, 'ssd_training', 'ssd_mobilenet_v1_ppn_shared_box_predictor_300x300_coco14_sync.config')
+        infgraphdir = os.path.join(project_path, 'ssd_inference_graph')
+        export_inference_graph_mod.main(configpath, trainingdir, infgraphdir)        
 
 ###add functionality to work on multiple classes
 def p_r_curve(in_csv, test_csv, project_name):
