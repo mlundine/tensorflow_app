@@ -33,6 +33,7 @@ import detection_functions_app as dtf
 import gdal_functions_app as gdfa
 import object_detection_tf
 import object_detection_real_time
+import object_detection_screen
 from PIL.ImageQt import ImageQt
 import matplotlib.pyplot as plt
 
@@ -331,7 +332,13 @@ class Window(QMainWindow):
             object_detection_real_time.main('ssd', thresh, classes, project_dir)
         else:
             object_detection_real_time.main('mask', thresh, classes, project_dir)
-    
+    def screenCap_button(self, thresh, classes, top, left, width, height, button, modelButton):
+        if str(modelButton.currentText()) == 'Faster R-CNN':
+            object_detection_screen.main('faster', thresh, classes, project_dir, top, left, width, height)
+        elif str(modelButton.currentText()) == 'SSD Mobilenet':
+            object_detection_screen.main('ssd', thresh, classes, project_dir, top, left, width, height)
+        else:
+            object_detection_screen.main('mask', thresh, classes, project_dir, top, left, width, height)    
     ## Converts geotiffs to jpegs
     def convertImages_button(self):
         options = QFileDialog.Options()
@@ -530,38 +537,91 @@ class Window(QMainWindow):
         videoCam.resize(100,100)
         videoCam.move(150,200)
         videoCam.show()
+
+        screenCap = QPushButton('Screen Capture', self)
+        screenCap.resize(100,100)
+        screenCap.move(150,300)
+        screenCap.show()
         
         threshLab = QLabel('Threshold', self)
-        threshLab.move(175,300)
+        threshLab.move(175,400)
         threshLab.show()
         threshSlider = QDoubleSpinBox(self)
-        threshSlider.move(150,325)
+        threshSlider.move(150,425)
         threshSlider.setMinimum(0.00)
         threshSlider.setMaximum(0.99)
         threshSlider.setValue(0.60)
         threshSlider.show()
         
         numClassesLab = QLabel('Number of Classes', self)
-        numClassesLab.move(160,350)
+        numClassesLab.move(160,450)
         numClassesLab.show()
         numClasses = QSpinBox(self)
-        numClasses.move(150,375)
+        numClasses.move(150,475)
         numClasses.setMinimum(1)
         numClasses.show()
+
+        topIntLab = QLabel('Top Coord.', self)
+        topIntLab.move(275, 300)
+        topIntLab.show()
+        
+        topInt = QSpinBox(self)
+        topInt.move(250, 325)
+        topInt.setMinimum(0)
+        topInt.setMaximum(100)
+        topInt.setValue(0)
+        topInt.show()
+        
+        leftIntLab = QLabel('Left Coord.', self)
+        leftIntLab.move(375, 300)
+        leftIntLab.show()
+        
+        leftInt = QSpinBox(self)
+        leftInt.move(350,325)
+        leftInt.setMinimum(0)
+        leftInt.setMaximum(100)
+        leftInt.setValue(0)
+        leftInt.show()
+        
+        widthIntLab = QLabel('Width', self)
+        widthIntLab.move(475, 300)
+        widthIntLab.show()
+        
+        widthInt = QSpinBox(self)
+        widthInt.move(450, 325)
+        widthInt.setMinimum(100)
+        widthInt.setMaximum(1000)
+        widthInt.setValue(800)
+        widthInt.show()
+        
+        heightIntLab = QLabel('Height', self)
+        heightIntLab.move(575,300)
+        heightIntLab.show()
+        
+        heightInt = QSpinBox(self)
+        heightInt.move(550,325)
+        heightInt.setMinimum(100)
+        heightInt.setMaximum(1000)
+        heightInt.setValue(800)
+        heightInt.show()
         
         
         exitFunc = QPushButton('Exit', self)
         exitFunc.resize(100,100)
-        exitFunc.move(150,410)
+        exitFunc.move(150,510)
         exitFunc.show()
         
-        buttons = [single_image, batch, threshLab, threshSlider, numClassesLab, numClasses, videoCam, exitFunc]
+        buttons = [single_image, batch, threshLab, threshSlider, numClassesLab, numClasses, videoCam, screenCap, topIntLab,
+                   topInt, leftIntLab, leftInt, widthIntLab, widthInt, heightIntLab, heightInt, exitFunc]
         
         ##Actions
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
         single_image.clicked.connect(lambda: self.singleImage_button(threshSlider.value(), numClasses.value(), exitFunc, modelButton))
         batch.clicked.connect(lambda: self.batch_button(threshSlider.value(), numClasses.value(), exitFunc, modelButton))
         videoCam.clicked.connect(lambda: self.videoCam_button(threshSlider.value(), numClasses.value(), exitFunc, modelButton))
+        screenCap.clicked.connect(lambda: self.screenCap_button(threshSlider.value(), numClasses.value(),
+                                                                topInt.value(), leftInt.value(), widthInt.value(),
+                                                                heightInt.value(), exitFunc, modelButton))
         
     def output_results_button(self, modelButton):
         getCoords = QPushButton('Get raster coordinates and resolution', self)
