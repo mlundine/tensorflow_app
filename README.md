@@ -47,6 +47,10 @@ C:/tensorflow_app/gui.
 
 ![Project Folder](/read_me_images/project_in_dir.PNG)
 
+You can choose which model you would like to train on.  Faster RCNN and SSD Mobilenet give bounding boxes as outputs, with Faster RCNN being more accurate but has slower inference speeds compared to SSD, and Mask RCNN gives bounding boxes and segmentation masks.  Mask RCNN has the slowest inference speeds.
+
+![modelTypes](/read_me_images/GUI_home_models.PNG)
+
 **II. Annotating**
 
 ![Annotating](/read_me_images/annotating_gui.PNG)
