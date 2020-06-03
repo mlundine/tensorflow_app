@@ -77,7 +77,7 @@ You should be finished with all annotations before using this section of the GUI
 
 Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects (so change name and value). Each object should have a unique integer id and a unique string name. Check your train_labels.csv file to see what integer id each label was given.  If you are only building a one class detector, then the id for your class will be 1.  Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training (or mrcnn_training if you are using Mask RCNN, SSD_training if you are using SSD Mobilenet) making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
 
-Here is an example labelmap from a pinochle deck detector with six classes.
+Here is an example labelmap from a euchre deck detector with six classes.
 
 ![labelmap](/read_me_images/labelmap.png)
 
