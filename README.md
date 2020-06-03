@@ -42,6 +42,9 @@ Once you have a good name, hit OK.  You should see at the top of the window Proj
 
 This will make a new project directory in /tensorflow_app/gui
 
+You can also open an existing project by changing the New Project button to Existing project, and then hitting go.  You will then navigate to your project folder
+C:/tensorflow_app/gui.
+
 ![Project Folder](/read_me_images/project_in_dir.PNG)
 
 **II. Annotating**
@@ -58,7 +61,9 @@ This will randomly select 80% of the photos for training and 20% of the photos f
 
 Next, you can start annotating. Click launch Labelimg. In this app, go to Open Directory, and select the train folder. Annotate each of your objects with a bounding box and a label. After each image is completely annotated, click save. This will create an xml file containing the coordinates for the annotations. Hit next image, and repeat. Keep in mind, every time you annotate an object, it should have exactly the same label (ex: only &#39;dog&#39;, not &#39;dog&#39; &#39;DOG&#39; &#39;Dog&#39;). Once you are done with the train folder, move onto the test folder. Once you are completely finished annotating all of the train and test photos, exit Labelimg. You can also exit the annotating section of the GUI at this point by hitting the Exit button.
 
-If you are trying to use Mask RCNN, you will also need to make png masks of your annotations.  These are images that you need to segment by the classes you are detecting.  For example if you were trying to detect cats and dogs, you would need to make a new image where all of the pixels that have dogs are given a certain value, all of the pixels with cats are given another value, and the rest of the pixels are zero.  These would be placed in the train_mask and test_mask folders.  In the future I will make some functions that can automate making the mask annotations.
+If you are trying to use Mask RCNN, you will also need to make png masks of your annotations.  These are images that you need to segment by the classes you are detecting.  For example if you were trying to detect cats and dogs, you would need to make a new image where all of the pixels that have dogs are given a certain value, all of the pixels with cats are given another value, and the rest of the pixels are zero.  These would be placed in the train_mask and test_mask folders.  You would also need to annotate each image with bounding boxes.  So your entire annotation set would be a train folder of jpeg images, with bounding boxes made in Labelimg, a test folder of jpeg images, with bounding boxes made in LabelImg, a train_mask folder, with binary PNG masks, and a test_mask folder, with binary PNG masks.  The mask images should have the same name as their corresponding jpeg images, the only difference is that the masks should be PNGs instead of jpegs.
+
+In the future I will make some functions that can automate making the mask annotations.  
 
 **III. Training**
 
@@ -66,7 +71,11 @@ If you are trying to use Mask RCNN, you will also need to make png masks of your
 
 You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords.  This will save two csvs containing the annotations for the test and train datasets in C:\tensorflow_app\gui\YourProject\images.  It will also save two tf record files in C:\tensorflow_app\gui\YourProject\images\frcnn_records (or mrcnn_records if you are using Mask R-CNN).
 
-Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects (so change name and value). Each object should have a unique integer id and a unique string name. Check your train_labels.csv file to see what integer id each label was given.  If you are only building a one class detector, then the id for your class will be 1.  Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training (or mrcnn_training if you are using Mask RCNN) making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
+Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects (so change name and value). Each object should have a unique integer id and a unique string name. Check your train_labels.csv file to see what integer id each label was given.  If you are only building a one class detector, then the id for your class will be 1.  Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training (or mrcnn_training if you are using Mask RCNN, SSD_training if you are using SSD Mobilenet) making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
+
+Here is an example labelmap from a pinochle deck detector with six classes.
+
+![labelmap](/read_me_images/labelmap.png)
 
 Next, hit configure training. This will bring up Notepad. There are a few changes you need to make.  For the changes that require filepaths, USE FORWARD SLASHES '/'.  When you copy the path in file explorer, Windows will make them backslashes '\'.  Make sure you change them to forward slashes:
 
@@ -100,7 +109,9 @@ num_examples: 67
 
 Change this to match the number of images in your test folder.
 
-Save this config file to /frcnn_training (or /mrcnn_training if you are doing Mask RCNN) as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). Next, hit start training. In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
+![config](/read_me_images/config.png)
+
+Save this config file to /frcnn_training (or /mrcnn_training if you are doing Mask RCNN, ssd_training if you are doing SSD Mobilenet) as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). Next, hit start training. In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
 
 **IV. Implementation**
 
@@ -115,6 +126,11 @@ If you want to run on a batch of images, change threshold to the level you want 
 It will also save the bounding boxes, labels, and thresholds to a .csv file in
 
 C:/tensorflow_app/gui/YourProject/implementation/results/bounding_boxes.  This will include all detections with thresholds greater than zero.
+
+
+I have also added implementation functions to run on your computer's webcam if it has one, and a function to run on a portion of your computer's screen.  For the screen function, you need to input coordinates for what region you want the detector to run on.  The top coordinate is how many pixels, going from the top of your screen downward that you want to the detection region to start.  The left coordinate is how many pixels from the left boundary that you want the detection region to start.  And then height and with are the height and width in pixels that you want the detection region to span.  
+
+![screendetection](/read_me_images/screenDetect.png)
 
 Now you can hit Exit, and then go to Output Results.
 
@@ -137,3 +153,26 @@ Then, in the second dialog box, select the test_labels.csv in YourProject\images
 This will save a .csv containing your precision and recall data as well as make a plot of the precision and recall which will display in the GUI. It will save the .csv file with the data and a .png of the plot to
 
 C:\tensorflow1\models\research\object\_detection\implementation\results\prdata.
+
+
+
+I have included some screenshots of the what directories should look like when using this app.
+
+![projectfolder](/read_me_images/project_folder.png)
+
+If you trained a detector, the training folder should look like this:
+
+![trainingFolder](/read_me_images/training_folder.png)
+
+If you exported the inference graph, the inference_graph folder should look like this:
+
+![infGraphFolder](/read_me_images/inf_graph_folder.png)
+
+The implementation folder looks like this:
+
+![impFolder](/read_me_images/imp_folder.png)
+
+The results folder looks like this:
+
+![resultFolder](/read_me_images/results_folder.png)
+
