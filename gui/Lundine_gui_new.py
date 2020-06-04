@@ -34,6 +34,7 @@ import gdal_functions_app as gdfa
 import object_detection_tf
 import object_detection_real_time
 import object_detection_screen
+import object_detection_window
 from PIL.ImageQt import ImageQt
 import matplotlib.pyplot as plt
 
@@ -330,6 +331,7 @@ class Window(QMainWindow):
             object_detection_real_time.main('faster', thresh, classes, project_dir)
         elif str(modelButton.currentText()) == 'SSD Mobilenet':
             object_detection_real_time.main('ssd', thresh, classes, project_dir)
+            button.clicked.connect(lambda: self.exit_buttons(buttons))
         else:
             object_detection_real_time.main('mask', thresh, classes, project_dir)
     def screenCap_button(self, thresh, classes, top, left, width, height, button, modelButton):
@@ -338,7 +340,16 @@ class Window(QMainWindow):
         elif str(modelButton.currentText()) == 'SSD Mobilenet':
             object_detection_screen.main('ssd', thresh, classes, project_dir, top, left, width, height)
         else:
-            object_detection_screen.main('mask', thresh, classes, project_dir, top, left, width, height)    
+            object_detection_screen.main('mask', thresh, classes, project_dir, top, left, width, height)
+
+
+    def windowGrabber_button(self, thresh, classes, windowName, button, modelButton):
+        if str(modelButton.currentText()) == 'Faster R-CNN':
+            object_detection_window.main('faster', thresh, classes, project_dir, windowName)
+        elif str(modelButton.currentText()) == 'SSD Mobilenet':
+            object_detection_screen.window('ssd', thresh, classes, project_dir, windowName)
+        else:
+            object_detection_screen.window('mask', thresh, classes, project_dir, windowName)
     ## Converts geotiffs to jpegs
     def convertImages_button(self):
         options = QFileDialog.Options()
@@ -604,15 +615,25 @@ class Window(QMainWindow):
         heightInt.setMaximum(1000)
         heightInt.setValue(800)
         heightInt.show()
-        
+
+        windowGrabber = QPushButton('Window Capture', self)
+        windowGrabber.resize(100,100)
+        windowGrabber.move(150, 510)
+        windowGrabber.show()
+
+        windowName = QLineEdit(self)
+        windowName.move(250, 510)
+        windowName.resize(100,50)
+        windowName.show()
+
         
         exitFunc = QPushButton('Exit', self)
         exitFunc.resize(100,100)
-        exitFunc.move(150,510)
+        exitFunc.move(150,610)
         exitFunc.show()
         
         buttons = [single_image, batch, threshLab, threshSlider, numClassesLab, numClasses, videoCam, screenCap, topIntLab,
-                   topInt, leftIntLab, leftInt, widthIntLab, widthInt, heightIntLab, heightInt, exitFunc]
+                   topInt, leftIntLab, leftInt, widthIntLab, widthInt, heightIntLab, heightInt, windowGrabber, exitFunc]
         
         ##Actions
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
@@ -622,6 +643,9 @@ class Window(QMainWindow):
         screenCap.clicked.connect(lambda: self.screenCap_button(threshSlider.value(), numClasses.value(),
                                                                 topInt.value(), leftInt.value(), widthInt.value(),
                                                                 heightInt.value(), exitFunc, modelButton))
+        windowGrabber.clicked.connect(lambda: self.windowGrabber_button(threshSlider.value(), numClasses.value(), windowName.text(),
+                                                                        exitFunc, modelButton))
+                                                                        
         
     def output_results_button(self, modelButton):
         getCoords = QPushButton('Get raster coordinates and resolution', self)
