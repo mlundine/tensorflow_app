@@ -134,7 +134,11 @@ It will also save the bounding boxes, labels, and thresholds to a .csv file in
 C:/tensorflow_app/gui/YourProject/implementation/results/bounding_boxes.  This will include all detections with thresholds greater than zero.
 
 
-I have also added implementation functions to run on your computer's webcam if it has one, and a function to run on a portion of your computer's screen.  For the screen function, you need to input coordinates for what region you want the detector to run on.  The top coordinate is how many pixels, going from the top of your screen downward that you want to the detection region to start.  The left coordinate is how many pixels from the left boundary that you want the detection region to start.  And then height and with are the height and width in pixels that you want the detection region to span.  
+I have also added implementation functions to run on your computer's webcam if it has one, and a function to run on a portion of your computer's screen.  For the screen function, you need to input coordinates for what region you want the detector to run on.  The top coordinate is how many pixels, going from the top of your screen downward that you want the detection region to start.  The left coordinate is how many pixels from the left boundary that you want the detection region to start.  And then height and with are the height and width in pixels that you want the detection region to span.  
+
+The latest function I have added is Window Capture.  This can be used to run a detector on a specific window open on your computer.  You just need to type the exact name of that window in the text box, then click the Window Capture button.  You will then see I window open showing the bounding boxes for objects it sees in the window you told it to look at.
+
+The webcam, the screen capture, and the window capture functions do not output anything currently.  Expect some updates to add outputs for these functions soon.
 
 ![screendetection](/read_me_images/screenDetect.png)
 
