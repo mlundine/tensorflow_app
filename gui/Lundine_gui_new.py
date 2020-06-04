@@ -633,7 +633,7 @@ class Window(QMainWindow):
         exitFunc.show()
         
         buttons = [single_image, batch, threshLab, threshSlider, numClassesLab, numClasses, videoCam, screenCap, topIntLab,
-                   topInt, leftIntLab, leftInt, widthIntLab, widthInt, heightIntLab, heightInt, windowGrabber, exitFunc]
+                   topInt, leftIntLab, leftInt, widthIntLab, widthInt, heightIntLab, heightInt, windowGrabber, windowName, exitFunc]
         
         ##Actions
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
