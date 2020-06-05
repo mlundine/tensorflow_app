@@ -347,9 +347,9 @@ class Window(QMainWindow):
         if str(modelButton.currentText()) == 'Faster R-CNN':
             object_detection_window.main('faster', thresh, classes, project_dir, windowName)
         elif str(modelButton.currentText()) == 'SSD Mobilenet':
-            object_detection_screen.window('ssd', thresh, classes, project_dir, windowName)
+            object_detection_window.main('ssd', thresh, classes, project_dir, windowName)
         else:
-            object_detection_screen.window('mask', thresh, classes, project_dir, windowName)
+            object_detection_window.main('mask', thresh, classes, project_dir, windowName)
     ## Converts geotiffs to jpegs
     def convertImages_button(self):
         options = QFileDialog.Options()
