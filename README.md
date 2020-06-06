@@ -186,3 +186,24 @@ The results folder looks like this:
 
 ![resultFolder](/read_me_images/results_folder.png)
 
+
+**VI. Libaries used**
+Standard Python library that comes with Anaconda Python 3 installation
+numpy, all the numerical methods
+pillow, image processing library
+opencv-python, image and video processing library
+gdal (best installed with conda install gdal), geographic data library
+pyqt5, all of the GUI related elements
+matplotlib, plotting library
+protobuf, making protbuf files
+lxml, parsing xml files
+Cython, speeding python code with C types
+contextlib2, tensorflow related stuff
+pyshp, making shapefiles
+sklearn, a couple signal processing things
+mss, screen captures
+pyautogui, screen captures
+win32gui, window captures
+tensorflow==1.13.1 or tensorflow-gpu==1.13.1, object detection api
+pyinstaller to make freeze the code
+
