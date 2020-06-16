@@ -96,8 +96,8 @@ def translate_bboxes(inFile, saveFile, coords_file, constant):
             filtered = chunk2.query("file == @querystr")
             for j in range(len(filtered)):
                 xmin = chunk.iloc[i,1]+res*filtered.iloc[j,3]
-                ymin = chunk.iloc[i,2]-res*filtered.iloc[j,5]
-                xmax = chunk.iloc[i,3]+res*filtered.iloc[j,4]
+                ymin = chunk.iloc[i,4]-res*filtered.iloc[j,5]
+                xmax = chunk.iloc[i,1]+res*filtered.iloc[j,4]
                 ymax = chunk.iloc[i,4]-res*filtered.iloc[j,6]
                 score = filtered.iloc[j,2]
                 label = filtered.iloc[j,1]
