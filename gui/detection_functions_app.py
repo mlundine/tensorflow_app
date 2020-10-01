@@ -68,7 +68,7 @@ def numpyToJPEG(inFolder, outFolder):
         name = os.path.splitext(os.path.basename(file))[0]
         outpath = outFolder + '\\' + name + '.jpeg'
         fix_and_reScale_DEMs(file, outpath) 
-        
+#numpyToJPEG(r'C:\tensorflow_app\gui\BaywatchMask\implementation\numpy_arrays', r'C:\tensorflow_app\gui\BaywatchMask\implementation\jpegs')
 
 def numpy_rgb_to_jpeg(inFolder, outFolder):
     for file in glob.glob(inFolder + '/*.npy'):

@@ -10,8 +10,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import os
 import sys
-
-
+import warnings
+warnings.filterwarnings('ignore')
 
 global root
 root = os.path.abspath(os.sep)
@@ -38,6 +38,7 @@ import object_detection_window
 from PIL.ImageQt import ImageQt
 import matplotlib.pyplot as plt
 
+
 ## Contains all of the widgets for the GUI   
 class Window(QMainWindow):
     
@@ -50,6 +51,14 @@ class Window(QMainWindow):
         screenWidth = sizeObject.width()
         global screenHeight
         screenHeight = sizeObject.height()
+        global bw1
+        bw1 = int(screenWidth/15)
+        global bw2
+        bw2 = int(screenWidth/50)
+        global bh1
+        bh1 = int(screenHeight/15)
+        global bh2
+        bh2 = int(screenHeight/20)
         self.setGeometry(50, 50, 10 + int(screenWidth/2), 10 + int(screenHeight/2))
         self.setWindowTitle("TensorFlow Object Detection GUI")
         self.home()
@@ -110,12 +119,12 @@ class Window(QMainWindow):
         goButton.hide()
         if button_item == 'New Project':
             name_widget = QLineEdit(self)
-            name_widget.move(100,150)
-            name_widget.resize(100,50)
+            name_widget.move(bw1,int(1.5*bw1))
+            name_widget.resize(bw1,bw1/2)
             name_widget.show()
             ok_button = QPushButton('OK', self)
-            ok_button.move(200,150)
-            ok_button.resize(50,50)
+            ok_button.move(int(2*bw1),int(1.5*bw1))
+            ok_button.resize(int(bw1/2),int(bw1/2))
             ok_button.show()
             ok_button.clicked.connect(lambda: self.setup_button2(name_widget.text(), ok_button, name_widget))
         else:
@@ -132,8 +141,8 @@ class Window(QMainWindow):
     
     def setup_button2(self, project_name, okBut=None, name_line=None):
         topName = QLabel('Project: ' + project_name, self)
-        topName.resize(200,25)
-        topName.move(400,0)
+        topName.resize(int(2*bw1),int(bw1/4))
+        topName.move(int(bw1*4),0)
         topName.show()
         
         if name_line != None:
@@ -255,15 +264,15 @@ class Window(QMainWindow):
                 label = QLabel(self)
                 pixmap = QPixmap(detect_im)
                 scaleFac = 1
-                logical1 = 300 + (pixmap.width()/scaleFac) >= screenWidth-300
-                logical2 = 50 + (pixmap.height()/scaleFac) >= screenHeight-50
+                logical1 = int(bw1*7) + (pixmap.width()/scaleFac) >= screenWidth-int(bw1*3)
+                logical2 = int(bw1/2) + (pixmap.height()/scaleFac) >= screenHeight-int(bw1/2)
                 while (logical1 or logical2):
                     scaleFac = scaleFac + 1
-                    logical1 = 300 + (pixmap.width()/scaleFac) >= screenWidth-300
-                    logical2 = 50 + (pixmap.height()/scaleFac) >= screenHeight-50
+                    logical1 = int(bw1*7) + (pixmap.width()/scaleFac) >= screenWidth-int(bw1*3)
+                    logical2 = int(bw1/2) + (pixmap.height()/scaleFac) >= screenHeight-int(bw1/2)
                 small_pixmap = pixmap.scaled(int(pixmap.width()/scaleFac), int(pixmap.height()/scaleFac))
                 label.setPixmap(small_pixmap)
-                label.move(300,50)
+                label.move(int(bw1*7),int(bw1/2))
                 label.resize(int(pixmap.width()/scaleFac),int(pixmap.height()/scaleFac))
                 label.show()
                 buttons = [label, button]
@@ -274,15 +283,15 @@ class Window(QMainWindow):
                 label = QLabel(self)
                 pixmap = QPixmap(detect_im)
                 scaleFac = 1
-                logical1 = 300 + (pixmap.width()/scaleFac) >= screenWidth-300
-                logical2 = 50 + (pixmap.height()/scaleFac) >= screenHeight-50
+                logical1 = int(bw1*7) + (pixmap.width()/scaleFac) >= screenWidth-int(bw1*3)
+                logical2 = int(bw1/2) + (pixmap.height()/scaleFac) >= screenHeight-int(bw1/2)
                 while (logical1 or logical2):
                     scaleFac = scaleFac + 1
-                    logical1 = 300 + (pixmap.width()/scaleFac) >= screenWidth-300
-                    logical2 = 50 + (pixmap.height()/scaleFac) >= screenHeight-50
+                    logical1 = int(bw1*7) + (pixmap.width()/scaleFac) >= screenWidth-int(bw1*3)
+                    logical2 = int(bw1/2) + (pixmap.height()/scaleFac) >= screenHeight-int(bw1/2)
                 small_pixmap = pixmap.scaled(int(pixmap.width()/scaleFac), int(pixmap.height()/scaleFac))
                 label.setPixmap(small_pixmap)
-                label.move(300,50)
+                label.move(int(bw1*7),int(bw1/2))
                 label.resize(int(pixmap.width()/scaleFac),int(pixmap.height()/scaleFac))
                 label.show()
                 buttons = [label, button]
@@ -293,15 +302,15 @@ class Window(QMainWindow):
                 label = QLabel(self)
                 pixmap = QPixmap(detect_im)
                 scaleFac = 1
-                logical1 = 300 + (pixmap.width()/scaleFac) >= screenWidth-300
-                logical2 = 50 + (pixmap.height()/scaleFac) >= screenHeight-50
+                logical1 = int(bw1*7) + (pixmap.width()/scaleFac) >= screenWidth-int(bw1*3)
+                logical2 = int(bw1/2) + (pixmap.height()/scaleFac) >= screenHeight-int(bw1/2)
                 while (logical1 or logical2):
                     scaleFac = scaleFac + 1
-                    logical1 = 300 + (pixmap.width()/scaleFac) >= screenWidth-300
-                    logical2 = 50 + (pixmap.height()/scaleFac) >= screenHeight-50
+                    logical1 = int(bw1*7) + (pixmap.width()/scaleFac) >= screenWidth-int(bw1*3)
+                    logical2 = int(bw1/2) + (pixmap.height()/scaleFac) >= screenHeight-int(bw1/2)
                 small_pixmap = pixmap.scaled(int(pixmap.width()/scaleFac), int(pixmap.height()/scaleFac))
                 label.setPixmap(small_pixmap)
-                label.move(300,50)
+                label.move(int(bw1*7),int(bw1/2))
                 label.resize(int(pixmap.width()/scaleFac),int(pixmap.height()/scaleFac))
                 label.show()
                 buttons = [label, button]
@@ -452,28 +461,28 @@ class Window(QMainWindow):
     ## All the functions below are butttons that contain more buttons
     def annotating_button(self, modelButton):
         convertImages = QPushButton('Covert Geotiffs to JPEGS (single band)', self)
-        convertImages.resize(400,100)
-        convertImages.move(300,100)
+        convertImages.resize(int(bw1*4),bw1)
+        convertImages.move(int(3*bw1),bw1)
         convertImages.show()
         
         convertImages2 = QPushButton('Convert Geotiffs to JPEGS (RGB)', self)
-        convertImages2.resize(400,100)
-        convertImages2.move(300,200)
+        convertImages2.resize(int(bw1*4),bw1)
+        convertImages2.move(int(3*bw1),2*bw1)
         convertImages2.show()
         
         setup_data = QPushButton('Set up training and test data', self)
-        setup_data.resize(400,100)
-        setup_data.move(300,300)
+        setup_data.resize(int(bw1*4),bw1)
+        setup_data.move(int(3*bw1),3*bw1)
         setup_data.show()
         
         launch_labelimg = QPushButton('Launch Labelimg', self)
-        launch_labelimg.resize(400,100)
-        launch_labelimg.move(300,400)
+        launch_labelimg.resize(int(bw1*4),bw1)
+        launch_labelimg.move(int(3*bw1),4*bw1)
         launch_labelimg.show()
         
         exitFunc = QPushButton('Exit', self)
-        exitFunc.resize(400,100)
-        exitFunc.move(300,500)
+        exitFunc.resize(int(bw1*4),bw1)
+        exitFunc.move(int(3*bw1),5*bw1)
         exitFunc.show()
         
         buttons = [convertImages, convertImages2, setup_data, launch_labelimg, exitFunc]
@@ -487,40 +496,40 @@ class Window(QMainWindow):
         
     def training_button(self, modelButton):
         convertAnnotations = QPushButton('1. Convert Annotations to TfRecords', self)
-        convertAnnotations.resize(400,100)
-        convertAnnotations.move(300,100)
+        convertAnnotations.resize(int(bw1*4),bw1)
+        convertAnnotations.move(int(3*bw1),bw1)
         convertAnnotations.show()
         
         makeLabelMap = QPushButton('2. Make Label Map', self)
-        makeLabelMap.resize(400,100)
-        makeLabelMap.move(300,200)
+        makeLabelMap.resize(int(bw1*4),bw1)
+        makeLabelMap.move(int(3*bw1),2*bw1)
         makeLabelMap.show()
         
         configTraining = QPushButton('3. Configure Training', self)
-        configTraining.resize(400,100)
-        configTraining.move(300,300)
+        configTraining.resize(int(bw1*4),bw1)
+        configTraining.move(int(3*bw1),3*bw1)
         configTraining.show()
         
         startTraining = QPushButton('4. Start Training', self)
-        startTraining.resize(400,100)
-        startTraining.move(300,400)
+        startTraining.resize(int(bw1*4),bw1)
+        startTraining.move(int(3*bw1),bw1*4)
         startTraining.show()
         
         exportGraph = QPushButton('5. Export Inference Graph', self)
-        exportGraph.resize(400,100)
-        exportGraph.move(300,500)
+        exportGraph.resize(int(bw1*4),bw1)
+        exportGraph.move(int(3*bw1),5*bw1)
         exportGraph.show()
         
         ckptSlider = QSpinBox(self)
         ckptSlider.setMinimum(1)
         ckptSlider.setMaximum(100000)
         ckptSlider.setValue(40000)
-        ckptSlider.move(700,535)
+        ckptSlider.move(int(7*bw1),int(5.35*bw1))
         ckptSlider.show()
         
         exitFunc = QPushButton('Exit', self)
-        exitFunc.resize(400,100)
-        exitFunc.move(300,600)
+        exitFunc.resize(int(bw1*4),bw1)
+        exitFunc.move(int(3*bw1),6*bw1)
         exitFunc.show()
         
         buttons = [convertAnnotations, makeLabelMap, configTraining, startTraining, exportGraph, ckptSlider, exitFunc]
@@ -535,101 +544,102 @@ class Window(QMainWindow):
         
     def implementation_button(self, modelButton):
         single_image = QPushButton('Single Image', self)
-        single_image.resize(100,100)
-        single_image.move(150,0)
+        single_image.resize(bw1, bw1)
+        single_image.move(int(bw1*1.5),0)
         single_image.show()
         
         batch = QPushButton('Batch of Images', self)
-        batch.resize(100,100)
-        batch.move(150,100)
+        batch.resize(bw1, bw1)
+        batch.move(int(bw1*1.5),bw1)
         batch.show()
 
         videoCam = QPushButton('Video Camera', self)
-        videoCam.resize(100,100)
-        videoCam.move(150,200)
+        videoCam.resize(bw1, bw1)
+        videoCam.move(int(bw1*1.5),2*bw1)
         videoCam.show()
 
         screenCap = QPushButton('Screen Capture', self)
-        screenCap.resize(100,100)
-        screenCap.move(150,300)
+        screenCap.resize(bw1, bw1)
+        screenCap.move(int(bw1*1.5),3*bw1)
         screenCap.show()
         
         threshLab = QLabel('Threshold', self)
-        threshLab.move(175,400)
+        threshLab.move(int(bw1*1.75),int(4*bw1))
         threshLab.show()
         threshSlider = QDoubleSpinBox(self)
-        threshSlider.move(150,425)
+        threshSlider.move(int(bw1*1.5),int(bw1*4.25))
         threshSlider.setMinimum(0.00)
         threshSlider.setMaximum(0.99)
         threshSlider.setValue(0.60)
         threshSlider.show()
         
         numClassesLab = QLabel('Number of Classes', self)
-        numClassesLab.move(160,450)
+        numClassesLab.resize(bw1,int(bw1/4))
+        numClassesLab.move(int(1.6*bw1),int(4.5*bw1))
         numClassesLab.show()
         numClasses = QSpinBox(self)
-        numClasses.move(150,475)
+        numClasses.move(int(bw1*1.5),int(bw1*4.75))
         numClasses.setMinimum(1)
         numClasses.show()
 
         topIntLab = QLabel('Top Coord.', self)
-        topIntLab.move(275, 300)
+        topIntLab.move(int(2.75*bw1), int(3*bw1))
         topIntLab.show()
         
         topInt = QSpinBox(self)
-        topInt.move(250, 325)
+        topInt.move(int(2.5*bw1), int(3.25*bw1))
         topInt.setMinimum(0)
         topInt.setMaximum(100)
         topInt.setValue(0)
         topInt.show()
         
         leftIntLab = QLabel('Left Coord.', self)
-        leftIntLab.move(375, 300)
+        leftIntLab.move(int(3.75*bw1), int(3*bw1))
         leftIntLab.show()
         
         leftInt = QSpinBox(self)
-        leftInt.move(350,325)
+        leftInt.move(int(3.5*bw1),int(3.25*bw1))
         leftInt.setMinimum(0)
         leftInt.setMaximum(100)
         leftInt.setValue(0)
         leftInt.show()
         
         widthIntLab = QLabel('Width', self)
-        widthIntLab.move(475, 300)
+        widthIntLab.move(int(4.75*bw1), int(3*bw1))
         widthIntLab.show()
         
         widthInt = QSpinBox(self)
-        widthInt.move(450, 325)
+        widthInt.move(int(4.5*bw1), int(3.25*bw1))
         widthInt.setMinimum(100)
         widthInt.setMaximum(1000)
         widthInt.setValue(800)
         widthInt.show()
         
         heightIntLab = QLabel('Height', self)
-        heightIntLab.move(575,300)
+        heightIntLab.move(int(5.75*bw1),int(3*bw1))
         heightIntLab.show()
         
         heightInt = QSpinBox(self)
-        heightInt.move(550,325)
+        heightInt.move(int(5.5*bw1),int(3.25*bw1))
         heightInt.setMinimum(100)
         heightInt.setMaximum(1000)
         heightInt.setValue(800)
         heightInt.show()
 
         windowGrabber = QPushButton('Window Capture', self)
-        windowGrabber.resize(100,100)
-        windowGrabber.move(150, 510)
+        windowGrabber.resize(bw1,bw1)
+        windowGrabber.move(int(1.5*bw1), int(5.1*bw1))
         windowGrabber.show()
 
         windowName = QLineEdit(self)
-        windowName.move(250, 510)
-        windowName.resize(100,50)
+        windowName.move(int(2.5*bw1), int(5.1*bw1))
+        windowName.resize(bw1,int(bw1/2))
         windowName.show()
 
         
         exitFunc = QPushButton('Exit', self)
-        exitFunc.resize(100,100)
-        exitFunc.move(150,610)
+        exitFunc.resize(bw1, bw1)
+        exitFunc.move(int(bw1*1.5),int(6.1*bw1))
         exitFunc.show()
         
         buttons = [single_image, batch, threshLab, threshSlider, numClassesLab, numClasses, videoCam, screenCap, topIntLab,
@@ -649,28 +659,28 @@ class Window(QMainWindow):
         
     def output_results_button(self, modelButton):
         getCoords = QPushButton('Get raster coordinates and resolution', self)
-        getCoords.resize(400,100)
-        getCoords.move(300,100)
+        getCoords.resize(4*bw1,bw1)
+        getCoords.move(3*bw1,bw1)
         getCoords.show()
         
         convertCoords = QPushButton('Convert detection coordinates to geographic coordinates', self)
-        convertCoords.resize(400,100)
-        convertCoords.move(300,200)
+        convertCoords.resize(4*bw1,bw1)
+        convertCoords.move(3*bw1,2*bw1)
         convertCoords.show()
         
         makeShape = QPushButton('Make Shapefile', self)
-        makeShape.resize(400,100)
-        makeShape.move(300,300)
+        makeShape.resize(4*bw1,bw1)
+        makeShape.move(3*bw1,3*bw1)
         makeShape.show()
         
         getPR = QPushButton('Get PR Curve', self)
-        getPR.resize(400,100)
-        getPR.move(300,400)
+        getPR.resize(4*bw1,bw1)
+        getPR.move(3*bw1,4*bw1)
         getPR.show()
     
         exitFunc = QPushButton('Exit', self)
-        exitFunc.resize(400,100)
-        exitFunc.move(300,500)
+        exitFunc.resize(4*bw1,bw1)
+        exitFunc.move(3*bw1,5*bw1)
         exitFunc.show()
         
         buttons = [getCoords, convertCoords, makeShape, getPR, exitFunc]
@@ -689,35 +699,35 @@ class Window(QMainWindow):
         maskBox.addItem('Faster R-CNN')
         maskBox.addItem('Mask R-CNN')
         maskBox.addItem('SSD Mobilenet')
-        maskBox.resize(100,50)
-        maskBox.move(0, 100)
+        maskBox.resize(bw1,int(bw1/2))
+        maskBox.move(0, bw1)
         
         ##Button for set up
         setUp = QComboBox(self)
         setUp.addItem('New Project')
         setUp.addItem('Existing Project')
-        setUp.resize(100,50)
-        setUp.move(0,150)
+        setUp.resize(bw1,int(bw1/2))
+        setUp.move(0,int(bw1*1.5))
         setUpGo = QPushButton('Go', self)
-        setUpGo.resize(25,50)
-        setUpGo.move(100,150)
+        setUpGo.resize(int(bw1/4),int(bw1/2))
+        setUpGo.move(bw1,int(1.5*bw1))
         
         
         annotating = QPushButton("1. Annotating", self)
-        annotating.resize(100,100)
-        annotating.move(0,300)
+        annotating.resize(bw1, bw1)
+        annotating.move(0,3*bw1)
         
         training = QPushButton("2. Training", self)
-        training.resize(100,100)
-        training.move(0,400)
+        training.resize(bw1, bw1)
+        training.move(0,4*bw1)
         
         implementation = QPushButton("3. Implementation", self)
-        implementation.resize(100,100)
-        implementation.move(0,500)
+        implementation.resize(bw1, bw1)
+        implementation.move(0,5*bw1)
         
         output_results = QPushButton("4. Output Results", self)
-        output_results.resize(100,100)
-        output_results.move(0,600)
+        output_results.resize(bw1, bw1)
+        output_results.move(0,6*bw1)
         
         
         ##Actions

@@ -108,12 +108,15 @@ def detection_function(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJECT, M
                 [detection_boxes, detection_scores, detection_classes, num_detections],
                 feed_dict={image_tensor: image_expanded})
             
+            boxes_display = boxes[classes==1]
+            scores_display = scores[classes==1]
+            classes_display = classes[classes==1]
             ##Drawing the boxes and score on the image
             vis_util.visualize_boxes_and_labels_on_image_array(
             image,
-            np.squeeze(boxes),
-            np.squeeze(classes).astype(np.int32),
-            np.squeeze(scores),
+            np.squeeze(boxes_display),
+            np.squeeze(classes_display).astype(np.int32),
+            np.squeeze(scores_display),
             category_index,
             use_normalized_coordinates=True,
             line_thickness=8,
@@ -130,10 +133,9 @@ def detection_function(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJECT, M
             
             
             # Return bounding box coordinates as a .csv file
-            boxes = np.squeeze(boxes)
-            scores = np.squeeze(scores)
-            classes = np.squeeze(classes)
-            min_score_thresh = 0
+            min_score_thresh=0
+            #bboxes = boxes[np.logical_and(classes == 1,scores>min_score_thresh)]
+            #scores = scores[np.logical_and(classes ==1, scores>min_score_thresh)]
             bboxes = boxes[scores>min_score_thresh]
             scores = scores[scores>min_score_thresh]
             im_width, im_height = image.shape[0:2]
@@ -194,7 +196,11 @@ def detection_function(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJECT, M
         j=1
         for box in bboxes:
             ymin, xmin, ymax, xmax = box
-            final_box.append([path_to_image, category_index.get(classes[j-1]).get('name'), scores[j-1], xmin*im_width, xmax *im_width, ymin*im_height, ymax*im_height])
+            try:
+                lab = category_index.get(classes[j-1]).get('name')
+            except:
+                lab = 'N/A'
+            final_box.append([path_to_image, lab, scores[j-1], xmin*im_width, xmax *im_width, ymin*im_height, ymax*im_height])
             j=j+1
             
         np.savetxt(path_to_save_csv, final_box, delimiter=",", fmt='%s')

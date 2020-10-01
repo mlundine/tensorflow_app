@@ -1,4 +1,5 @@
 # Import packages
+import datetime
 import os
 import cv2
 import numpy as np
@@ -34,7 +35,7 @@ def screenshot(window_title=None):
 def detection_function_box(THRESHOLD, NUM_CLASSES, PROJECT, MODEL, window_title):
     root_mod = os.path.abspath(os.sep)
     obj_det_mod = os.path.join(root_mod, 'tensorflow_app', 'models', 'research', 'object_detection')
-
+    path_to_save_csv = os.path.join(PROJECT, 'implementation', 'results', 'bounding_boxes', 'result_screen.csv')
     if MODEL == 'faster':
         PATH_TO_CKPT = os.path.join(PROJECT, 'frcnn_inference_graph', 'frozen_inference_graph.pb')
         PATH_TO_LABELS = os.path.join(PROJECT, 'frcnn_training', 'labelmap.pbtxt')
@@ -82,7 +83,8 @@ def detection_function_box(THRESHOLD, NUM_CLASSES, PROJECT, MODEL, window_title)
     # Initialize feed
     #bounding_box = {'top': top, 'left': left, 'width': width, 'height': height}
     #sct = mss()
-
+    final_box = []
+    final_box.append(['time','label', 'score', 'x_min', 'x_max', 'y_min', 'y_max'])
     while(True):
 
         # Acquire frame and expand frame dimensions to have shape: [1, None, None, 3]
@@ -107,9 +109,40 @@ def detection_function_box(THRESHOLD, NUM_CLASSES, PROJECT, MODEL, window_title)
             use_normalized_coordinates=True,
             line_thickness=8,
             min_score_thresh=THRESHOLD)
-
+        
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        rows = np.shape(frame)[0]
+        bottomLeftCornerOfText = (10,rows-5)
+        fontScale = 1
+        fontColor = (0,0,0)
+        lineType = 2
+        time = str(datetime.datetime.now())
+        cv2.putText(frame, time, 
+                    bottomLeftCornerOfText, 
+                    font, 
+                    fontScale,
+                    fontColor,
+                    lineType)
         # All the results have been drawn on the frame, so it's time to display it.
         cv2.imshow('Object detector', frame)
+        
+	# Return bounding box coordinates as a .csv file
+
+        boxes = np.squeeze(boxes)
+        scores = np.squeeze(scores)
+        classes = np.squeeze(classes[classes==1])
+        min_score_thresh = THRESHOLD
+        bboxes = boxes[scores>min_score_thresh]
+        scores = scores[scores>min_score_thresh]
+        im_width, im_height = frame.shape[0:2]
+        # Close the image
+        j=1
+        for box in bboxes:
+            ymin, xmin, ymax, xmax = box
+            final_box.append([time, category_index.get(classes[j-1]).get('name'), scores[j-1], xmin*im_width, xmax *im_width, ymin*im_height, ymax*im_height])
+            j=j+1
+                
+        np.savetxt(path_to_save_csv, final_box, delimiter=",", fmt='%s')
 
         # Press 'q' to quit
         if cv2.waitKey(1) == ord('q'):
@@ -126,7 +159,7 @@ def detection_function_mrcnn(THRESHOLD, NUM_CLASSES, PROJECT, window_title):
     PATH_TO_CKPT = os.path.join(PROJECT, 'mrcnn_inference_graph', 'frozen_inference_graph.pb')
 
     PATH_TO_LABELS = os.path.join(PROJECT, 'mrcnn_training', 'labelmap.pbtxt')
-
+    path_to_save_csv = os.path.join(PROJECT, 'implementation', 'results', 'bounding_boxes', 'result_screen.csv')
     ## Load the label map.
     # Label maps map indices to category names, so that when our convolution
     # network predicts `5`, we know that this corresponds to `king`.
@@ -196,7 +229,8 @@ def detection_function_mrcnn(THRESHOLD, NUM_CLASSES, PROJECT, window_title):
     # Initialize feed
     #bounding_box = {'top': top, 'left': left, 'width': width, 'height': height}
     #sct = mss()
-
+    final_box = []
+    final_box.append([time,'label', 'score', 'x_min', 'x_max', 'y_min', 'y_max'])
     while(True):
 
         # Acquire frame and expand frame dimensions to have shape: [1, None, None, 3]
@@ -219,9 +253,39 @@ def detection_function_mrcnn(THRESHOLD, NUM_CLASSES, PROJECT, window_title):
             use_normalized_coordinates=True,
             line_thickness=8,
             min_score_thresh=THRESHOLD)
-
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        rows = np.shape(frame)[0]
+        bottomLeftCornerOfText = (10,rows-5)
+        fontScale = 1
+        fontColor = (0,0,0)
+        lineType = 2
+        time = str(datetime.datetime.now())
+        cv2.putText(frame,time, 
+                    bottomLeftCornerOfText, 
+                    font, 
+                    fontScale,
+                    fontColor,
+                    lineType)
         # All the results have been drawn on the frame, so it's time to display it.
         cv2.imshow('Object detector', frame)
+        
+	# Return bounding box coordinates as a .csv file
+
+        boxes = np.squeeze(boxes)
+        scores = np.squeeze(scores)
+        classes = np.squeeze(classes)
+        min_score_thresh = THRESHOLD
+        bboxes = boxes[scores>min_score_thresh]
+        scores = scores[scores>min_score_thresh]
+        im_width, im_height = frame.shape[0:2]
+        # Close the image
+        j=1
+        for box in bboxes:
+            ymin, xmin, ymax, xmax = box
+            final_box.append([time, category_index.get(classes[j-1]).get('name'), scores[j-1], xmin*im_width, xmax *im_width, ymin*im_height, ymax*im_height])
+            j=j+1
+                
+        np.savetxt(path_to_save_csv, final_box, delimiter=",", fmt='%s')
 
         # Press 'q' to quit
         if cv2.waitKey(1) == ord('q'):
