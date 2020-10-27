@@ -10,11 +10,11 @@
 
 Download this repository, and unzip it to your C-Drive, with the name "tensorflow_app".
 
-Download the executable from [TensorflowApplication v1.0](https://github.com/mlundine/tensorflow_app/releases)
+Download the most recent executable under releases, GPU if you are using a GPU, CPU if you are using your CPU.
 
 Place the executable inside C:/tensorflow_app/gui
 
-In a web browser, go to [tensorflow model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md).
+In a web browser, go to [tensorflow model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md).
 
 ![modelzoopic](/read_me_images/MODELZOO.png)
 
