@@ -6,7 +6,31 @@
 
 **By: Mark Lundine**
 
-**I. Installation and Setup**
+**Setting Up with Anaconda (has yolov5 capabilities)**
+
+Download this repository, unzip it somewhere on your device, with the name "tensorflow_app", not "tensorflow_app-master".
+
+There are two conda environments containing all of the needed package versions located in tensorflow_app/envs.
+
+The first one to use is tensorflowappgpu.yml.
+
+Open up Anaconda prompt and run:
+
+cd wherever_you_placed_it/tensorflow_app/envs
+
+conda env create --file tensorflowappgpu.yml
+
+conda env create --file yolov5.yml
+
+conda activate tensorflowappgpu
+
+cd wherever_you_placed_it/tensoflow_app/gui
+
+python Lundine_gui_new.py
+
+Then the GUI will run.
+
+**I. Installation and Setup for Executable (No yolov5 capabilities)**
 
 Download this repository, and unzip it to your C-Drive, with the name "tensorflow_app".
 
@@ -117,11 +141,32 @@ Here is a screenshot of a config file with areas that need edits outlined in red
 
 ![config](/read_me_images/config.png)
 
-Save this config file to /frcnn_training (or /mrcnn_training if you are doing Mask RCNN, ssd_training if you are doing SSD Mobilenet) as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). Next, hit start training. In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
+Save this config file to /frcnn_training (or /mrcnn_training if you are doing Mask RCNN, ssd_training if you are doing SSD Mobilenet) as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). 
+
+In .../tensorflow_app/yolov5, open the dataset.yaml file in a text editor.
+
+edit the path to train and val
+
+train: wherever_you_placed_it/tensorflow_app/gui/project_name/images/train
+val: wherever_you_placed_it/tensorflow_app/gui/project_name/images/test
+
+Next, hit start training. For yolo models, it will ask you to choose a weights file, pick the yolov5s.pt in ../tensorflow_app/yolov5.  Then it will ask for your model's yaml file.
+
+For yolo models, it will save training data to wherever_you_placed_it/tensorflow_app/gui/project_name/yolodata/train.
+
+The weights file you can use for implementation is either best.pt or last.pt located in
+
+wherever_you_placed_it/tensorflow_app/gui/project_name/yolodata/train/weights.
+
+If you want to resume yolo training, just choose the last.pt as the weights file when you hit Start Training.
+
+In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
 
 **IV. Implementation**
 
 ![Implementation](/read_me_images/implementation.PNG)
+
+Yolo implementation will ask for you to give it a weights file, this should be the .pt file you get after training.
 
 First, change the threshold value to what you want your detector to run on (ex: 0.60 means the detector will only mark detections it is at least 60% confident in). Also change the number of classes to the number of classes your detector has.  Double check you have the correct number of classes before running single image or batch of images, otherwise, some errors will likely arise.
 

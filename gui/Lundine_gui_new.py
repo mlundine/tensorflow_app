@@ -144,7 +144,7 @@ class Window(QMainWindow):
                     data = fileName2
                     batch = 5
                     #TODO epochs slider
-                    epochs = 20
+                    epochs = 300
                     cmd0 = r'activate yolov5 & '
                     cmd1 = r'python ' + yolotrain + ' --weights '
                     cmd2 = weights + ' --data ' + data + ' --epochs ' + str(epochs) + ' --batch-size ' + str(batch) + ' --project ' + yolo_dir
