@@ -207,6 +207,71 @@ def make_annotation_csvs(images_folder):
         test_xml_df.to_csv(os.path.join(images_folder, 'test_labels.csv'), index=None)
 
     do_both()
+
+##makes yolo annotations (.txt file for each image)
+def make_yolo_records(images_folder, yolo_folder):
+    save_train = os.path.join(yolo_folder, 'train')
+    save_test = os.path.join(yolo_folder, 'test')
+    try:
+        os.makedirs(save_train)
+        os.makedirs(save_test)
+    except:
+        pass
+    
+    train_csv = os.path.join(images_folder, 'train_labels.csv')
+    test_csv = os.path.join(images_folder, 'test_labels.csv')
+    
+    train_csv = pd.read_csv(train_csv)
+    train_images = train_csv.filename.unique()
+    for image in train_images:
+        querystr = image
+        imageFilter=train_csv.query('filename == @querystr')
+        imageFilter = imageFilter.reset_index()
+        listofboxes = []
+        for i in range(len(imageFilter)):
+            label_value = int(imageFilter['label_value'][i]-1)
+            width = imageFilter['width'][i]
+            height = imageFilter['height'][i]
+            xmin = imageFilter['xmin'][i]
+            xmax = imageFilter['xmax'][i]
+            ymin = imageFilter['ymin'][i]
+            ymax = imageFilter['ymax'][i]
+            box_width = (xmax-xmin)/width
+            box_height = (ymax-ymin)/width
+            x_center = ((xmax+xmin)/2)*(1/width)
+            y_center = ((ymax+ymin)/2)*(1/height)
+            box = [label_value, x_center, y_center, box_width, box_height]
+            listofboxes.append(box)
+        saveFile = os.path.join(save_train, os.path.splitext(image)[0])+'.txt'
+        fmt = '%d', '%s', '%s', '%s', '%s'
+        np.savetxt(saveFile, listofboxes, delimiter=" ", fmt=fmt)
+    print('training annotations finished')
+    
+    test_csv = pd.read_csv(test_csv)
+    test_images = test_csv.filename.unique()
+    for image in test_images:
+        querystr = image
+        imageFilter=test_csv.query('filename == @querystr')
+        imageFilter = imageFilter.reset_index()
+        listofboxes = []
+        for i in range(len(imageFilter)):
+            label_value = int(imageFilter['label_value'][i]-1)
+            width = imageFilter['width'][i]
+            height = imageFilter['height'][i]
+            xmin = imageFilter['xmin'][i]
+            xmax = imageFilter['xmax'][i]
+            ymin = imageFilter['ymin'][i]
+            ymax = imageFilter['ymax'][i]
+            box_width = (xmax-xmin)/width
+            box_height = (ymax-ymin)/width
+            x_center = ((xmax+xmin)/2)*(1/width)
+            y_center = ((ymax+ymin)/2)*(1/height)
+            box = [label_value, x_center, y_center, box_width, box_height]
+            listofboxes.append(box)
+        saveFile = os.path.join(save_test, os.path.splitext(image)[0])+'.txt'
+        fmt = '%d', '%s', '%s', '%s', '%s'
+        np.savetxt(saveFile, listofboxes, delimiter=" ", fmt=fmt)
+    print('testing annotations finished')
     
 def make_tf_records(images_folder, model):
     

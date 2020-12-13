@@ -29,6 +29,18 @@ set_py_path = 'set PYTHONPATH=' + pythonpath1 + r';' + pythonpath2 + r';' + pyth
 global object_detection_folder
 object_detection_folder = os.path.join(pythonpath2, 'object_detection')
 sys.path.append(object_detection_folder)
+global yolov5folder
+yolov5folder = os.path.join(root, 'tensorflow_app', 'yolov5')
+sys.path.append(yolov5folder)
+global yolomodels
+yolomodels = os.path.join(yolov5folder, 'models')
+sys.path.append(yolomodels)
+global yoloutils
+yoloutils = os.path.join(yolov5folder, 'utils')
+sys.path.append(yoloutils)
+global yolodata
+yolodata = os.path.join(yolov5folder, 'data')
+sys.path.append(yolodata)
 import detection_functions_app as dtf
 import gdal_functions_app as gdfa
 import object_detection_tf
@@ -37,6 +49,12 @@ import object_detection_screen
 import object_detection_window
 from PIL.ImageQt import ImageQt
 import matplotlib.pyplot as plt
+global yolotrain
+yolotrain = os.path.join(yolov5folder, r'lundine_yolo_train.py')
+global yolodetect 
+yolodetect = os.path.join(yolov5folder, r'Lundine_yolo_detect.py')
+
+
 
 
 ## Contains all of the widgets for the GUI   
@@ -46,6 +64,7 @@ class Window(QMainWindow):
     ## Initializing the window
     def __init__(self):
         super(Window, self).__init__()
+        
         sizeObject = QDesktopWidget().screenGeometry(-1)
         global screenWidth
         screenWidth = sizeObject.width()
@@ -59,9 +78,17 @@ class Window(QMainWindow):
         bh1 = int(screenHeight/15)
         global bh2
         bh2 = int(screenHeight/20)
-        self.setGeometry(50, 50, 10 + int(screenWidth/2), 10 + int(screenHeight/2))
+
+        
+
         self.setWindowTitle("TensorFlow Object Detection GUI")
+        self.setGeometry(50, 50, 10 + int(screenWidth/2), 10 + int(screenHeight/2))
+
         self.home()
+
+
+
+
     
     ## Clicking the exit button hides all of the buttons above it
     def exit_buttons(self, buttons):
@@ -76,9 +103,12 @@ class Window(QMainWindow):
             dtf.make_tf_records(annotation_images_dir, 'faster')
         elif str(modelButton.currentText()) == 'Mask R-CNN':
             dtf.make_tf_records_mask(annotation_images_dir)
+        elif str(modelButton.currentText()) == 'Yolov5':
+            dtf.make_yolo_records(annotation_images_dir, yolo_labels)
         else:
             dtf.make_tf_records(annotation_images_dir, 'ssd')
         button.setEnabled(False)
+
     
     ## Opens up notepad so you can edit the label map
     def makeLabelMap_button(self, button):
@@ -101,6 +131,35 @@ class Window(QMainWindow):
             dtf.train(project_dir, 'faster')
         elif str(modelButton.currentText()) == 'Mask R-CNN':
             dtf.train(project_dir, 'mask')
+        elif str(modelButton.currentText()) == 'Yolov5':
+            options = QFileDialog.Options()
+            options |= QFileDialog.DontUseNativeDialog
+            fileName, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
+            if fileName:
+                weights = fileName
+                options2 = QFileDialog.Options()
+                options2 |= QFileDialog.DontUseNativeDialog
+                fileName2, _ = QFileDialog.getOpenFileName(self,"Select Training Yaml", "","All Files (*);;Yaml (*.yaml)", options=options2)
+                if fileName2:
+                    data = fileName2
+                    batch = 5
+                    #TODO epochs slider
+                    epochs = 20
+                    cmd0 = r'activate yolov5 & '
+                    cmd1 = r'python ' + yolotrain + ' --weights '
+                    cmd2 = weights + ' --data ' + data + ' --epochs ' + str(epochs) + ' --batch-size ' + str(batch) + ' --project ' + yolo_dir
+                    os.system(cmd0 + cmd1 + cmd2)
+
+
+            #main(weights, data, epochs, batch_size, project)
+            
+##            cd = 'cd C:/tensorflow_app/yolov5 & '
+##            cmd0 = 'activate yolov5 &'
+##            cmd1 = 'python C:/tensorflow_app/yolov5/train.py --img 640 --batch 5 --epochs 20 --data C:/tensorflow_app/gui/euchre/euchre.yaml'
+##            cmd2 = ' --weights yolov5s.pt'
+##            os.system(cd+cmd0+cmd1+cmd2)
+##
+##            ##python C:/tensorflow_app/gui/yolov5/train.py --img 640 --batch 5 --epochs 3000 --data ____.yaml --weights yolov5s.pt
         else:
             dtf.train(project_dir, 'ssd')
         
@@ -214,10 +273,13 @@ class Window(QMainWindow):
         global frcnn_training_dir
         global mrcnn_training_dir
         global ssd_training_dir
+        global yolo_dir
+        global yolo_labels
         frcnn_training_dir = os.path.join(project_dir, 'frcnn_training')
         mrcnn_training_dir = os.path.join(project_dir, 'mrcnn_training')
         ssd_training_dir = os.path.join(project_dir, 'ssd_training')
-        
+        yolo_dir = os.path.join(project_dir, 'yolodata')
+        yolo_labels = os.path.join(project_dir, 'labels')
         
         
         try:
@@ -245,6 +307,8 @@ class Window(QMainWindow):
             os.makedirs(ssd_records)
             os.makedirs(mask_results)
             os.makedirs(result_images_dir)
+            os.makedirs(yolo_dir)
+            os.makedirs(yolo_labels)
             
         except:
             pass
@@ -296,6 +360,19 @@ class Window(QMainWindow):
                 label.show()
                 buttons = [label, button]
                 button.clicked.connect(lambda: self.exit_buttons(buttons))
+            elif str(modelButton.currentText()) == 'Yolov5':
+                options = QFileDialog.Options()
+                options |= QFileDialog.DontUseNativeDialog
+                weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
+                if weights:
+                    #weights, source, conf, project
+                    cmd0 = 'activate yolov5 & '
+                    cmd1 = 'python ' + yolodetect + ' --weights '
+                    cmd2 = weights + ' --source ' + fileName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --view-img --save-txt --save-conf'
+                    os.system(cmd0 + cmd1 + cmd2)
+                    buttons = [button]
+                    button.clicked.connect(lambda: self.exit_buttons(buttons))
+
             else:
                 object_detection_tf.main(project_dir, 'single', fileName, float(thresh), int(classes), 'mask')
                 detect_im = os.path.join(result_images_dir, os.path.splitext(os.path.basename(fileName))[0])            
@@ -330,7 +407,16 @@ class Window(QMainWindow):
             elif str(modelButton.currentText()) == 'SSD Mobilenet':
                 object_detection_tf.main(project_dir, 'batch', folderName, float(thresh), int(classes), 'ssd')
                 buttons = [button]
-                button.clicked.connect(lambda: self.exit_buttons(buttons))                
+                button.clicked.connect(lambda: self.exit_buttons(buttons))
+            elif str(modelButton.currentText()) == 'Yolov5':
+                options = QFileDialog.Options()
+                options |= QFileDialog.DontUseNativeDialog
+                weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
+                if weights:
+                    cmd0 = 'activate yolov5 & '
+                    cmd1 = 'python ' + yolodetect + ' --weights '
+                    cmd2 = weights + ' --source ' + folderName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --save-txt --save-conf'
+                    os.system(cmd0 + cmd1 + cmd2)
             else:
                 object_detection_tf.main(project_dir, 'batch', folderName, float(thresh), int(classes), 'mask')
                 buttons = [button]
@@ -338,9 +424,21 @@ class Window(QMainWindow):
     def videoCam_button(self, thresh, classes, button, modelButton):
         if str(modelButton.currentText()) == 'Faster R-CNN':
             object_detection_real_time.main('faster', thresh, classes, project_dir)
+            buttons = [button]
+            button.clicked.connect(lambda: self.exit_buttons(buttons))
         elif str(modelButton.currentText()) == 'SSD Mobilenet':
             object_detection_real_time.main('ssd', thresh, classes, project_dir)
+            buttons = [button]
             button.clicked.connect(lambda: self.exit_buttons(buttons))
+        elif str(modelButton.currentText()) == 'Yolov5':
+            options = QFileDialog.Options()
+            options |= QFileDialog.DontUseNativeDialog
+            weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
+            if weights:
+                cmd0 = 'activate yolov5 & '
+                cmd1 = 'python ' + yolodetect + ' --weights '
+                cmd2 = weights + ' --source ' + '0' + ' --conf ' + str(thresh) + ' --project ' + yolo_dir
+                os.system(cmd0 + cmd1 + cmd2)
         else:
             object_detection_real_time.main('mask', thresh, classes, project_dir)
     def screenCap_button(self, thresh, classes, top, left, width, height, button, modelButton):
@@ -348,6 +446,10 @@ class Window(QMainWindow):
             object_detection_screen.main('faster', thresh, classes, project_dir, top, left, width, height)
         elif str(modelButton.currentText()) == 'SSD Mobilenet':
             object_detection_screen.main('ssd', thresh, classes, project_dir, top, left, width, height)
+        elif str(modelButton.currentText()) == 'Yolov5':
+                ##insert
+            #TODO SCREENCAP YOLO
+            print('yolo')
         else:
             object_detection_screen.main('mask', thresh, classes, project_dir, top, left, width, height)
 
@@ -357,6 +459,10 @@ class Window(QMainWindow):
             object_detection_window.main('faster', thresh, classes, project_dir, windowName)
         elif str(modelButton.currentText()) == 'SSD Mobilenet':
             object_detection_window.main('ssd', thresh, classes, project_dir, windowName)
+        elif str(modelButton.currentText()) == 'Yolov5':
+            ###insert
+            #TODO WINDOW GRABBER YOLO
+            print('yolo')
         else:
             object_detection_window.main('mask', thresh, classes, project_dir, windowName)
     ## Converts geotiffs to jpegs
@@ -391,6 +497,7 @@ class Window(QMainWindow):
     
     ## Converts bounding box detection coordinates to geographic coordinates
     ## using the csv output from getCoords_button()
+    #TODO CONVERT COORDS YOLO
     def convertCoords_button(self):
         rasterCoords = os.path.join(geobbox_dir, 'raster_coords.csv')
         saveSheet = os.path.join(geobbox_dir, 'result_geobbox.csv')
@@ -495,17 +602,17 @@ class Window(QMainWindow):
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
         
     def training_button(self, modelButton):
-        convertAnnotations = QPushButton('1. Convert Annotations to TfRecords', self)
+        convertAnnotations = QPushButton('1. Convert Annotations to TfRecords or Yolo Records', self)
         convertAnnotations.resize(int(bw1*4),bw1)
         convertAnnotations.move(int(3*bw1),bw1)
         convertAnnotations.show()
         
-        makeLabelMap = QPushButton('2. Make Label Map', self)
+        makeLabelMap = QPushButton('2. Make Label Map (skip for yolo)', self)
         makeLabelMap.resize(int(bw1*4),bw1)
         makeLabelMap.move(int(3*bw1),2*bw1)
         makeLabelMap.show()
         
-        configTraining = QPushButton('3. Configure Training', self)
+        configTraining = QPushButton('3. Configure Training (skip for yolo)', self)
         configTraining.resize(int(bw1*4),bw1)
         configTraining.move(int(3*bw1),3*bw1)
         configTraining.show()
@@ -515,7 +622,7 @@ class Window(QMainWindow):
         startTraining.move(int(3*bw1),bw1*4)
         startTraining.show()
         
-        exportGraph = QPushButton('5. Export Inference Graph', self)
+        exportGraph = QPushButton('5. Export Inference Graph (skip for yolo)', self)
         exportGraph.resize(int(bw1*4),bw1)
         exportGraph.move(int(3*bw1),5*bw1)
         exportGraph.show()
@@ -534,7 +641,7 @@ class Window(QMainWindow):
         
         buttons = [convertAnnotations, makeLabelMap, configTraining, startTraining, exportGraph, ckptSlider, exitFunc]
         
-        ##Actions
+
         convertAnnotations.clicked.connect(lambda: self.convertAnnotations_button(convertAnnotations, modelButton))
         makeLabelMap.clicked.connect(lambda: self.makeLabelMap_button(makeLabelMap))
         configTraining.clicked.connect(lambda: self.configTraining_button(configTraining, modelButton))
@@ -699,6 +806,7 @@ class Window(QMainWindow):
         maskBox.addItem('Faster R-CNN')
         maskBox.addItem('Mask R-CNN')
         maskBox.addItem('SSD Mobilenet')
+        maskBox.addItem('Yolov5')
         maskBox.resize(bw1,int(bw1/2))
         maskBox.move(0, bw1)
         
@@ -736,6 +844,8 @@ class Window(QMainWindow):
         training.clicked.connect(lambda: self.training_button(maskBox))
         implementation.clicked.connect(lambda: self.implementation_button(maskBox))
         output_results.clicked.connect(lambda: self.output_results_button(maskBox))
+        
+
         self.show()
 
 ## Function outside of the class to run the app   
