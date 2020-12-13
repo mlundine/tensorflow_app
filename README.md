@@ -143,11 +143,14 @@ Here is a screenshot of a config file with areas that need edits outlined in red
 
 Save this config file to /frcnn_training (or /mrcnn_training if you are doing Mask RCNN, ssd_training if you are doing SSD Mobilenet) as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). 
 
+**Setting Up Yolo Training**
+
 In .../tensorflow_app/yolov5, open the dataset.yaml file in a text editor.
 
 edit the path to train and val
 
 train: wherever_you_placed_it/tensorflow_app/gui/project_name/images/train
+
 val: wherever_you_placed_it/tensorflow_app/gui/project_name/images/test
 
 Next, hit start training. For yolo models, it will ask you to choose a weights file, pick the yolov5s.pt in ../tensorflow_app/yolov5.  Then it will ask for your model's yaml file.
