@@ -95,6 +95,17 @@ In the future I will make some functions that can automate making the mask annot
 
 **III. Training**
 
+**Setting Up Yolo Training**
+
+In .../tensorflow_app/yolov5, open the dataset.yaml file in a text editor.
+
+edit the path to train and val
+
+train: wherever_you_placed_it/tensorflow_app/gui/project_name/images/train
+
+val: wherever_you_placed_it/tensorflow_app/gui/project_name/images/test
+
+
 ![Training](/read_me_images/training.PNG)
 
 You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords.  This will save two csvs containing the annotations for the test and train datasets in C:\tensorflow_app\gui\YourProject\images.  It will also save two tf record files in C:\tensorflow_app\gui\YourProject\images\frcnn_records (or mrcnn_records if you are using Mask R-CNN).
@@ -143,25 +154,18 @@ Here is a screenshot of a config file with areas that need edits outlined in red
 
 Save this config file to /frcnn_training (or /mrcnn_training if you are doing Mask RCNN, ssd_training if you are doing SSD Mobilenet) as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). 
 
-**Setting Up Yolo Training**
-
-In .../tensorflow_app/yolov5, open the dataset.yaml file in a text editor.
-
-edit the path to train and val
-
-train: wherever_you_placed_it/tensorflow_app/gui/project_name/images/train
-
-val: wherever_you_placed_it/tensorflow_app/gui/project_name/images/test
-
 Next, hit start training. For yolo models, it will ask you to choose a weights file, pick the yolov5s.pt in ../tensorflow_app/yolov5.  Then it will ask for your model's yaml file.
 
 For yolo models, it will save training data to wherever_you_placed_it/tensorflow_app/gui/project_name/yolodata/train.
 
 The weights file you can use for implementation is either best.pt or last.pt located in
 
+
 wherever_you_placed_it/tensorflow_app/gui/project_name/yolodata/train/weights.
 
+
 If you want to resume yolo training, just choose the last.pt as the weights file when you hit Start Training.
+
 
 In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
 
