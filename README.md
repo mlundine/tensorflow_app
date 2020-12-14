@@ -22,7 +22,7 @@ conda env create --file tensorflowappgpu.yml
 
 conda env create --file yolov5.yml
 
-conda activate tensorflowappgpu
+conda activate MarkAppGPU
 
 cd wherever_you_placed_it/tensoflow_app/gui
 
