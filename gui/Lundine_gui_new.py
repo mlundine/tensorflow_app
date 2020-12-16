@@ -98,7 +98,7 @@ class Window(QMainWindow):
     ## Converts annotation xmls to csvs and then csvs to tf records
     def convertAnnotations_button(self, button, modelButton):
         print(annotation_images_dir)
-        dtf.make_annotation_csvs(annotation_images_dir)
+        #dtf.make_annotation_csvs(annotation_images_dir)
         if str(modelButton.currentText()) == 'Faster R-CNN':
             dtf.make_tf_records(annotation_images_dir, 'faster')
         elif str(modelButton.currentText()) == 'Mask R-CNN':
@@ -126,7 +126,7 @@ class Window(QMainWindow):
         button.setEnabled(False)
     
     ## Starts the training, must be terminated with ctrl+c in the anaconda prompt
-    def startTraining_button(self, modelButton):
+    def startTraining_button(self, modelButton, imSlider, epochSlider):
         if str(modelButton.currentText()) == 'Faster R-CNN':
             dtf.train(project_dir, 'faster')
         elif str(modelButton.currentText()) == 'Mask R-CNN':
@@ -144,10 +144,11 @@ class Window(QMainWindow):
                     data = fileName2
                     batch = 5
                     #TODO epochs slider
-                    epochs = 300
+                    epochs = str(epochSlider)
+                    img_size = str(imSlider)
                     cmd0 = r'activate yolov5 & '
                     cmd1 = r'python ' + yolotrain + ' --weights '
-                    cmd2 = weights + ' --data ' + data + ' --epochs ' + str(epochs) + ' --batch-size ' + str(batch) + ' --project ' + yolo_dir
+                    cmd2 = weights + ' --data ' + data + ' --epochs ' + str(epochs) + ' --batch-size ' + str(batch) + ' --project ' + yolo_dir + ' --img-size ' + img_size
                     os.system(cmd0 + cmd1 + cmd2)
 
 
@@ -317,7 +318,7 @@ class Window(QMainWindow):
     ##TO DO  
     ## runs detection on a single image, displays the result in gui window
     ## gets threshold and number of classes from the gui sliders
-    def singleImage_button(self, thresh, classes, button, modelButton):
+    def singleImage_button(self, thresh, classes, ImgSize, button, modelButton):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(self,"Select Image", "","All Files (*);;Images (*.jpeg *.jpg)", options=options)
@@ -368,7 +369,7 @@ class Window(QMainWindow):
                     #weights, source, conf, project
                     cmd0 = 'activate yolov5 & '
                     cmd1 = 'python ' + yolodetect + ' --weights '
-                    cmd2 = weights + ' --source ' + fileName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --view-img --save-txt --save-conf'
+                    cmd2 = weights + ' --source ' + fileName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --img-size ' + str(ImgSize) + ' --save-txt --save-conf'
                     os.system(cmd0 + cmd1 + cmd2)
                     buttons = [button]
                     button.clicked.connect(lambda: self.exit_buttons(buttons))
@@ -395,7 +396,7 @@ class Window(QMainWindow):
     #TO DO
     ## runs detection on a batch of images
     ## gets the threshold and number of classes from the gui sliders
-    def batch_button(self, thresh, classes, button, modelButton):
+    def batch_button(self, thresh, classes, ImgSize, button, modelButton):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         folderName = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
@@ -415,7 +416,7 @@ class Window(QMainWindow):
                 if weights:
                     cmd0 = 'activate yolov5 & '
                     cmd1 = 'python ' + yolodetect + ' --weights '
-                    cmd2 = weights + ' --source ' + folderName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --save-txt --save-conf'
+                    cmd2 = weights + ' --source ' + folderName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --img-size ' + str(ImgSize) + ' --save-txt --save-conf'
                     os.system(cmd0 + cmd1 + cmd2)
             else:
                 object_detection_tf.main(project_dir, 'batch', folderName, float(thresh), int(classes), 'mask')
@@ -512,6 +513,19 @@ class Window(QMainWindow):
                 folderName = folderName.replace('/', '\\')
                 print(folderName)
                 dtf.translate_bboxes(fileName, saveSheet, rasterCoords, folderName)
+                
+    def yoloConvertCoords_button(self):
+        rasterCoords = os.path.join(geobbox_dir, 'raster_coords.csv')
+        saveSheet = os.path.join(geobbox_dir, 'result_geobbox.csv')
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName = str(QFileDialog.getExistingDirectory(self,"Select bounding box folder"))
+        if fileName:
+            options = QFileDialog.Options()
+            options |= QFileDialog.DontUseNativeDialog
+            folderName = str(QFileDialog.getExistingDirectory(self, "Select Image File Directory"))
+            if folderName:
+                dtf.yolotranslate_bboxes(fileName, saveSheet, rasterCoords, folderName)
     
     ## Makes a shapefile using the georeferenced bounding box coordinates
     ## does not define the projection
@@ -639,13 +653,40 @@ class Window(QMainWindow):
         exitFunc.move(int(3*bw1),6*bw1)
         exitFunc.show()
         
-        buttons = [convertAnnotations, makeLabelMap, configTraining, startTraining, exportGraph, ckptSlider, exitFunc]
+        yoloImgLabel = QLabel('Max Image\nDimension', self)
+        yoloImgLabel.resize(bw1,int(bw1/4))
+        yoloImgLabel.move(int(7*bw1),int(4.2*bw1))
+        
+
+        yoloEpochLabel = QLabel('Epochs', self)
+        yoloEpochLabel.resize(bw1,int(bw1/4))
+        yoloEpochLabel.move(int(7.8*bw1),int(4.2*bw1))
+        
+                
+        yoloImgSlider = QSpinBox(self)
+        yoloImgSlider.setMinimum(1)
+        yoloImgSlider.setMaximum(100000)
+        yoloImgSlider.setValue(640)
+        yoloImgSlider.move(int(7*bw1),int(4.5*bw1))
+
+        yoloEpochSlider = QSpinBox(self)
+        yoloEpochSlider.setMinimum(1)
+        yoloEpochSlider.setMaximum(100000)
+        yoloEpochSlider.setValue(400)
+        yoloEpochSlider.move(int(7.8*bw1),int(4.5*bw1))
+        
+        if str(modelButton.currentText()) == 'Yolov5':
+            yoloImgLabel.show()
+            yoloImgSlider.show()
+            yoloEpochLabel.show()
+            yoloEpochSlider.show()
+        buttons = [convertAnnotations, makeLabelMap, configTraining, startTraining, exportGraph, ckptSlider, yoloImgSlider, yoloEpochSlider, yoloImgLabel, yoloEpochLabel, exitFunc]
         
 
         convertAnnotations.clicked.connect(lambda: self.convertAnnotations_button(convertAnnotations, modelButton))
         makeLabelMap.clicked.connect(lambda: self.makeLabelMap_button(makeLabelMap))
         configTraining.clicked.connect(lambda: self.configTraining_button(configTraining, modelButton))
-        startTraining.clicked.connect(lambda: self.startTraining_button(modelButton))
+        startTraining.clicked.connect(lambda: self.startTraining_button(modelButton, yoloImgSlider.value(), yoloEpochSlider.value()))
         exportGraph.clicked.connect(lambda: self.exportGraph_button(ckptSlider.value(), modelButton))
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
         
@@ -679,6 +720,20 @@ class Window(QMainWindow):
         threshSlider.setMaximum(0.99)
         threshSlider.setValue(0.60)
         threshSlider.show()
+
+        yoloImgLabel = QLabel('Max Image\nDimension', self)
+        yoloImgLabel.resize(bw1,int(bw1/4))
+        yoloImgLabel.move(int(3*bw1),int(4*bw1))
+
+        yoloImgSlider = QSpinBox(self)
+        yoloImgSlider.setMinimum(1)
+        yoloImgSlider.setMaximum(100000)
+        yoloImgSlider.setValue(640)
+        yoloImgSlider.move(int(3*bw1),int(4.25*bw1))
+
+        if str(modelButton.currentText()) == 'Yolov5':
+            yoloImgLabel.show()
+            yoloImgSlider.show()
         
         numClassesLab = QLabel('Number of Classes', self)
         numClassesLab.resize(bw1,int(bw1/4))
@@ -750,12 +805,12 @@ class Window(QMainWindow):
         exitFunc.show()
         
         buttons = [single_image, batch, threshLab, threshSlider, numClassesLab, numClasses, videoCam, screenCap, topIntLab,
-                   topInt, leftIntLab, leftInt, widthIntLab, widthInt, heightIntLab, heightInt, windowGrabber, windowName, exitFunc]
+                   topInt, leftIntLab, leftInt, widthIntLab, widthInt, heightIntLab, heightInt, windowGrabber, windowName, yoloImgLabel, yoloImgSlider, exitFunc]
         
         ##Actions
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
-        single_image.clicked.connect(lambda: self.singleImage_button(threshSlider.value(), numClasses.value(), exitFunc, modelButton))
-        batch.clicked.connect(lambda: self.batch_button(threshSlider.value(), numClasses.value(), exitFunc, modelButton))
+        single_image.clicked.connect(lambda: self.singleImage_button(threshSlider.value(), numClasses.value(), yoloImgSlider.value(), exitFunc, modelButton))
+        batch.clicked.connect(lambda: self.batch_button(threshSlider.value(), numClasses.value(), yoloImgSlider.value(), exitFunc, modelButton))
         videoCam.clicked.connect(lambda: self.videoCam_button(threshSlider.value(), numClasses.value(), exitFunc, modelButton))
         screenCap.clicked.connect(lambda: self.screenCap_button(threshSlider.value(), numClasses.value(),
                                                                 topInt.value(), leftInt.value(), widthInt.value(),
@@ -795,7 +850,10 @@ class Window(QMainWindow):
         ##Actions
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
         getCoords.clicked.connect(self.getCoords_button)
-        convertCoords.clicked.connect(self.convertCoords_button)
+        if modelButton.currentText()=='Yolov5':
+            convertCoords.clicked.connect(self.yoloConvertCoords_button)
+        else:
+            convertCoords.clicked.connect(self.convertCoords_button)
         makeShape.clicked.connect(self.makeShape_button)
         getPR.clicked.connect(lambda: self.getPR_button(exitFunc))
 

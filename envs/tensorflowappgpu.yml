@@ -1,4 +1,4 @@
-name: MarkAppGPU
+name: tensorflowappgpu
 channels:
   - defaults
 dependencies:
@@ -190,4 +190,4 @@ dependencies:
     - webencodings==0.5.1
     - widgetsnbextension==3.5.1
     - xlrd==1.2.0
-prefix: C:\Users\MarkLundine\anaconda3\envs\MarkAppGPU
+prefix: C:\Users\MarkLundine\anaconda3\envs\tensorflowappgpu

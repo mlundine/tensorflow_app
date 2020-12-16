@@ -68,7 +68,6 @@ def numpyToJPEG(inFolder, outFolder):
         name = os.path.splitext(os.path.basename(file))[0]
         outpath = outFolder + '\\' + name + '.jpeg'
         fix_and_reScale_DEMs(file, outpath) 
-#numpyToJPEG(r'C:\tensorflow_app\gui\BaywatchMask\implementation\numpy_arrays', r'C:\tensorflow_app\gui\BaywatchMask\implementation\jpegs')
 
 def numpy_rgb_to_jpeg(inFolder, outFolder):
     for file in glob.glob(inFolder + '/*.npy'):
@@ -103,7 +102,37 @@ def translate_bboxes(inFile, saveFile, coords_file, constant):
                 label = filtered.iloc[j,1]
                 geobox.append([filename, xmin, ymin, xmax, ymax, score, label])
     np.savetxt(saveFile, geobox, delimiter=",", fmt='%s')
-
+# =============================================================================
+# yolotranslate_bboxes is fed the folder with the bounding box coordinates
+# a file path to save a new .csv file with georeferenced coordinates for the 
+# bounding boxes, a file with the geo-coordinates and resolution of the orignal DEM
+# it outputs the .csv file with georeferenced bounding box coordinates
+# =============================================================================
+def yolotranslate_bboxes(inFolder, saveFile, coords_file, constant):
+    geobox = []
+    geobox.append(['file', 'xmin', 'ymin', 'xmax', 'ymax', 'score', 'label'])
+    for chunk in pd.read_csv(coords_file, chunksize=1):
+        res = chunk.iloc[0,5]
+        width = (chunk.iloc[0,3]-chunk.iloc[0,1])/res
+        height = (chunk.iloc[0,4]-chunk.iloc[0,2])/chunk.iloc[0,6]
+        #constant = r'C:\jpegs\'
+        for i in range(len(chunk)):
+            filename = os.path.splitext(os.path.basename(chunk.iloc[i,0]))[0]
+            bboxFile = os.path.join(inFolder, filename+'.txt')
+            try:
+                bboxFile = pd.read_csv(bboxFile, sep=" ", header=None)
+            except:
+                continue
+            bboxFile.columns = ["class", "x_center", "y_center", 'width', 'height', "conf"]
+            for j in range(len(bboxFile)):
+                xmin = chunk.iloc[i,1]+res*(bboxFile.iloc[j,1]-bboxFile.iloc[j,3]/2)*width
+                ymin = chunk.iloc[i,4]-res*(bboxFile.iloc[j,2]-bboxFile.iloc[j,4]/2)*height
+                xmax = chunk.iloc[i,1]+res*(bboxFile.iloc[j,1]+bboxFile.iloc[j,3]/2)*width
+                ymax = chunk.iloc[i,4]-res*(bboxFile.iloc[j,2]+bboxFile.iloc[j,4]/2)*height
+                score = bboxFile.iloc[j,5]
+                label = bboxFile.iloc[j,0]
+                geobox.append([filename, xmin, ymin, xmax, ymax, score, label])
+    np.savetxt(saveFile, geobox, delimiter=",", fmt='%s')
 # =============================================================================
 # Working but file does not have a spatial coordinate system, have to project in Arc
 # =============================================================================
