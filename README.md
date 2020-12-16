@@ -199,9 +199,9 @@ First, change the threshold value to what you want your detector to run on (ex: 
 
 If you are using a yolo detector, you should specify the max image size to feed the detector, the default is 640.  If you are feeding it a 300x300, change this slider to 300.  If you are feeding it a 1200x1200, change the slider to 1200.  Making this too large could max out your GPU.  Also if you have a rectangular image, say 1280x800 and you want to feed yolo the default size 640, it will maintain the aspect ratio of the original image, feeding it a 640x400 image.
 
-If you want to run on a single image, hit single image, and then navigate to the image (.jpg). Once you hit open, the detection will execute and you should see the image with bounding boxes appear in the GUI. It will also save this image to C:/tensorflow_app/gui/YourProject/implementation/results/images.
+If you want to run on a single image, hit single image, and then navigate to the image (.jpg for Faster R-CNN, Mask R-CNN, ssd, .jpg, .tif, or .png for Yolov5). Once you hit open, the detection will execute and you should see the image with bounding boxes appear in the GUI. It will also save this image to C:/tensorflow_app/gui/YourProject/implementation/results/images.
 
-If you want to run on a batch of images, change threshold to the level you want displayed on the ouput images and then hit Batch of Images and then navigate to the folder with all of those images (.jpg). Once this folder is opened, the detector will start and save all of the images to C:/tensorflow_app/gui/YourProject/implementation/results/images.
+If you want to run on a batch of images, change threshold to the level you want displayed on the ouput images and then hit Batch of Images and then navigate to the folder with all of those images (.jpg for Faster R-CNN, Mask R-CNN and ssd, .jpg, .tif, or .png for Yolov5). Once this folder is opened, the detector will start and save all of the images to C:/tensorflow_app/gui/YourProject/implementation/results/images.
 
 It will also save the bounding boxes, labels, and thresholds to a .csv file in
 
