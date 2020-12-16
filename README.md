@@ -81,7 +81,7 @@ You can choose which model you would like to train on.  Faster RCNN and SSD Mobi
 
 If you have all of the photos you want to annotate as .jpgs, you are ready to start annotating. If you are using geotiffs with a single band (like digital elevation models), hit Convert Geotiffs to JPEGs (single band). This will open a dialog box which you can use to navigate to the folder containing all of your geotiffs. If your geotiffs are RGB, then use Convert Geotiffs to JPEGs. The new images will save in the folder C:\tensorflow_app\gui\YourProject\implementation\jpegs. It will also convert your images to numpy arrays and save these to the folder C:\tensorflow_app\gui\YourProject\implementation\numpy_arrays.
 
-For Faster R-CNN, leave the changeable button on this. For Mask R-CNN, change it to Mask R-CNN.
+For Faster R-CNN, leave the changeable button on this. For Mask R-CNN, change it to Mask R-CNN.  
 
 Next, we need to randomize which images go into training (80% of images) and testing (20% of images). Click Set up training and testing data, and navigate to the folder containing all of your jpegs (if you used either of the previous buttons, the folder is C:\tensorflow_app\gui\YourProject\implementation\jpegs.
 
@@ -105,16 +105,27 @@ train: wherever_you_placed_it/tensorflow_app/gui/project_name/images/train
 
 val: wherever_you_placed_it/tensorflow_app/gui/project_name/images/test
 
+Save this yml file to  wherever_you_placed_it/tensorflow_app/gui/project_name/yolovdata.
+
+Then go to Training a).
 
 ![Training](/read_me_images/training.PNG)
 
-You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords.  This will save two csvs containing the annotations for the test and train datasets in C:\tensorflow_app\gui\YourProject\images.  It will also save two tf record files in C:\tensorflow_app\gui\YourProject\images\frcnn_records (or mrcnn_records if you are using Mask R-CNN).
+**Training a)**
+
+You should be finished with all annotations before using this section of the GUI. First, hit Convert Annotations to TfRecords or Yolo Records.  This will save two csvs containing the annotations for the test and train datasets in C:\tensorflow_app\gui\YourProject\images.  It will also save two tf record files in C:\tensorflow_app\gui\YourProject\images\frcnn_records (or mrcnn_records if you are using Mask R-CNN).
+
+If you are using yolov5, skipt to Training d).
+
+**Training b)**
 
 Next, hit Make Label Map. This will bring up Notepad. Modify the label map to match your objects (so change name and value). Each object should have a unique integer id and a unique string name. Check your train_labels.csv file to see what integer id each label was given.  If you are only building a one class detector, then the id for your class will be 1.  Save the file to C:/tensorflow_app/gui/YourProject/frcnn_training (or mrcnn_training if you are using Mask RCNN, SSD_training if you are using SSD Mobilenet) making sure the extension is .pbtxt. Once it is saved, close the Notepad window. Double check in the /frcnn_training folder that the extension is pbtxt. If it has .txt at the end, just edit the name and delete the txt.  Ignore Windows when it warns about changing the extension.
 
 Here is an example labelmap from a euchre deck detector with six classes.
 
 ![labelmap](/read_me_images/labelmap.png)
+
+**Training c)**
 
 Next, hit configure training. This will bring up Notepad. There are a few changes you need to make.  For the changes that require filepaths, USE FORWARD SLASHES '/'.  When you copy the path in file explorer, Windows will make them backslashes '\'.  Make sure you change them to forward slashes:
 
@@ -154,6 +165,12 @@ Here is a screenshot of a config file with areas that need edits outlined in red
 
 Save this config file to /frcnn_training (or /mrcnn_training if you are doing Mask RCNN, ssd_training if you are doing SSD Mobilenet) as a .config file, not a .txt file, and then close the Notepad window. Double check the extension (.config not .txt). 
 
+**Training d)**
+
+For yolo models, you should choose a maximum image dimension to train on. The default is 640 pixels.  But if all your training images are smaller, say 300x300, change this to 300.  If they are larger (ex: 1200x1200) you could change this to 1200.  Keep in mind making this too large might max out your GPU memory.
+
+Also for yolo models, you should decide a number of epochs to train for.  The default is 400.
+
 Next, hit start training. For yolo models, it will ask you to choose a weights file, pick the yolov5s.pt in ../tensorflow_app/yolov5.  Then it will ask for your model's yaml file.
 
 For yolo models, it will save training data to wherever_you_placed_it/tensorflow_app/gui/project_name/yolodata/train.
@@ -164,18 +181,21 @@ The weights file you can use for implementation is either best.pt or last.pt loc
 wherever_you_placed_it/tensorflow_app/gui/project_name/yolodata/train/weights.
 
 
-If you want to resume yolo training, just choose the last.pt as the weights file when you hit Start Training.
+If you want to resume yolo training, just choose the last.pt as the weights file when you hit Start Training.  Otherwise, you are now ready to try detection with your yolov5 model.
 
 
+**Training e)**
 In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
 
 **IV. Implementation**
 
 ![Implementation](/read_me_images/implementation.PNG)
 
-Yolo implementation will ask for you to give it a weights file, this should be the .pt file you get after training.
+Yolo implementation will ask for you to give it a weights file, this should be the .pt file you get after training (either best.pt or last.pt in the train/weights folder).
 
 First, change the threshold value to what you want your detector to run on (ex: 0.60 means the detector will only mark detections it is at least 60% confident in). Also change the number of classes to the number of classes your detector has.  Double check you have the correct number of classes before running single image or batch of images, otherwise, some errors will likely arise.
+
+If you are using a yolo detector, you should specify the max image size to feed the detector, the default is 640.  If you are feeding it a 300x300, change this slider to 300.  If you are feeding it a 1200x1200, change the slider to 1200.  Making this too large could max out your GPU.  Also if you have a rectangular image, say 1280x800 and you want to feed yolo the default size 640, it will maintain the aspect ratio of the original image, feeding it a 640x400 image.
 
 If you want to run on a single image, hit single image, and then navigate to the image (.jpg). Once you hit open, the detection will execute and you should see the image with bounding boxes appear in the GUI. It will also save this image to C:/tensorflow_app/gui/YourProject/implementation/results/images.
 
@@ -186,7 +206,7 @@ It will also save the bounding boxes, labels, and thresholds to a .csv file in
 C:/tensorflow_app/gui/YourProject/implementation/results/bounding_boxes.  This will include all detections with thresholds greater than zero.
 
 
-I have also added implementation functions to run on your computer's webcam if it has one, and a function to run on a portion of your computer's screen.  For the screen function, you need to input coordinates for what region you want the detector to run on.  The top coordinate is how many pixels, going from the top of your screen downward that you want the detection region to start.  The left coordinate is how many pixels from the left boundary that you want the detection region to start.  And then height and with are the height and width in pixels that you want the detection region to span.  
+I have also added implementation functions to run on your computer's webcam if it has one, and a function to run on a portion of your computer's screen. These are not available for Yolo detectors yet.  For the screen function, you need to input coordinates for what region you want the detector to run on.  The top coordinate is how many pixels, going from the top of your screen downward that you want the detection region to start.  The left coordinate is how many pixels from the left boundary that you want the detection region to start.  And then height and with are the height and width in pixels that you want the detection region to span.  
 
 The latest function I have added is Window Capture.  This can be used to run a detector on a specific window open on your computer.  You just need to type the exact name of that window in the text box, then click the Window Capture button.  You will then see I window open showing the bounding boxes for objects it sees in the window you told it to look at.
 
@@ -203,6 +223,8 @@ Now you can hit Exit, and then go to Output Results.
 If your original images were in a projected geographic coordinate system, hit Get raster coordinates and resolution. This will get the resolution and the four corner coordinates of each image and save it to a .csv file in geo\_bounding\_boxes.  You have to point it to the folder of the original rasters as geotiffs.
 
 Next, hit Convert detection coordinates to geographic coordinates. This will change the bounding box coordinates for each image from local coordinates to geographic coordinates.  You will need to show it the bounding box csv file made during implementation, and also the folder of jpegs that the detection was run on.
+
+For yolo models, it will ask for the labels folder which can be found in detect/labels for the batch of images you ran the detector on.  It will then ask for the folder containing the geotiffs you got the raster coordinates and resolution from.
 
 Next, hit Make Shapefile. This will make a Shapefile that can be opened in GIS software to display the detections. You will need to define the projection in the GIS software. This will save to /results/gis.
 
@@ -276,4 +298,8 @@ win32gui, window captures
 tensorflow==1.13.1 or tensorflow-gpu==1.13.1, object detection api
 
 pyinstaller to make freeze the code
+
+pytorch, yolov5 
+
+yolov5 code from ultralytics
 
