@@ -798,7 +798,11 @@ class Window(QMainWindow):
         windowName.resize(bw1,int(bw1/2))
         windowName.show()
 
-        
+        if modelButton.currentText()=='Yolov5':
+            windowGrabber.setEnabled(False)
+            screenCap.setEnabled(False)
+        else:
+            pass
         exitFunc = QPushButton('Exit', self)
         exitFunc.resize(bw1, bw1)
         exitFunc.move(int(bw1*1.5),int(6.1*bw1))
