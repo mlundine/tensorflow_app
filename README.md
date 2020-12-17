@@ -1,6 +1,6 @@
 # tensorflow_app
 
-**TensorFlow Graphical User Interface Guide (Windows)**
+**TensorFlow Graphical User Interface Guide**
 
 ![bayexample](/read_me_images/implement_gui.png)
 
@@ -14,7 +14,7 @@ There are two conda environments containing all of the needed package versions l
 
 The first one to use is tensorflowappgpu.yml.
 
-Open up Anaconda prompt and run:
+Open up Anaconda prompt on Windows or terminal on macs and run:
 
 cd wherever_you_placed_it/tensorflow_app/envs
 
@@ -22,13 +22,18 @@ conda env create --file tensorflowappgpu.yml
 
 conda env create --file yolov5.yml
 
-conda activate MarkAppGPU
+conda activate tensorflowappgpu
 
 cd wherever_you_placed_it/tensoflow_app/gui
 
-python Lundine_gui_new.py
+python Lundine_gui_new.py  (On Windows)
+
+python Lundine_gui_new_mac.py   (On Macs)
 
 Then the GUI will run.
+
+Now go to downloading pretrained tensorflow models, unless you only want to make a yolov5 model, then go to II. Annotating.
+
 
 **I. Installation and Setup for Executable (No yolov5 capabilities)**
 
@@ -37,6 +42,13 @@ Download this repository, and unzip it to your C-Drive, with the name "tensorflo
 Download the most recent executable under releases, GPU if you are using a GPU, CPU if you are using your CPU.
 
 Place the executable inside C:/tensorflow_app/gui
+
+To start the app, go to C:/tensorflow_app/gui and double click on TensorflowApplication.exe
+
+After a few seconds (or even a minute, give it some time, it has a lot of stuff to unpack and your antivirus might be checking it), the GUI will appear.
+
+
+**Downloading Pretrained Tensorflow Models**
 
 In a web browser, go to [tensorflow model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md).
 
@@ -52,9 +64,9 @@ ssd_mobilenet_v1_ppn_coco
 
 Use 7-zip to unzip these files into C:\tensorflow_app\models\research\object_detection
 
-To start the app, go to C:/tensorflow_app/gui and double click on TensorflowApplication.exe
 
-After a few seconds (or even a minute, give it some time, it has a lot of stuff to unpack and your antivirus might be checking it), the GUI will appear:
+**Making a New Project**
+
 
 ![GUI Home](/read_me_images/GUI_home.PNG)
 
