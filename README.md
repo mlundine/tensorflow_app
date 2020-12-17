@@ -32,7 +32,7 @@ python Lundine_gui_new_mac.py   (On Macs)
 
 Then the GUI will run.
 
-Now go to downloading pretrained tensorflow models, unless you only want to make a yolov5 model, then go to II. Annotating.
+Now go to downloading pretrained tensorflow models, unless you only want to make a yolov5 model, then go to Making a New Project.
 
 
 **I. Installation and Setup for Executable (No yolov5 capabilities)**
