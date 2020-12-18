@@ -14,9 +14,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 global root
-root = os.path.abspath(os.sep)
+root = os.path.dirname(os.getcwd())
 global pythonpath1
-pythonpath1 = os.path.join(root, 'tensorflow_app', 'models')
+pythonpath1 = os.path.join(root, 'models')
 sys.path.append(pythonpath1)
 global pythonpath2
 pythonpath2 = os.path.join(pythonpath1, 'research')
@@ -30,7 +30,7 @@ global object_detection_folder
 object_detection_folder = os.path.join(pythonpath2, 'object_detection')
 sys.path.append(object_detection_folder)
 global yolov5folder
-yolov5folder = os.path.join(root, 'tensorflow_app', 'yolov5')
+yolov5folder = os.path.join(root, 'yolov5')
 sys.path.append(yolov5folder)
 global yolomodels
 yolomodels = os.path.join(yolov5folder, 'models')

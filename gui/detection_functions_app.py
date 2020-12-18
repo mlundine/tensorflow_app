@@ -28,8 +28,8 @@ import export_inference_graph_mod
 
 
 ##write out necessary paths
-root_mod = os.path.abspath(os.sep)
-models_path_mod = os.path.join(root_mod, 'tensorflow_app', 'models')
+root_mod = os.path.dirname(os.getcwd())
+models_path_mod = os.path.join(root_mod, 'models')
 research_path_mod = os.path.join(models_path_mod, 'research')
 slim_path_mod = os.path.join(research_path_mod, 'slim')
 set_py_path_mod = 'set PYTHONPATH=' + models_path_mod + r';' + research_path_mod + r';' + slim_path_mod
