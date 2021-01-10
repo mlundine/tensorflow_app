@@ -120,7 +120,7 @@ def detect(save_img=False):
                     raise StopIteration
 
             # Save results (image with detections)
-            if save_img:
+            if save_img and len(det)>0:
                 if dataset.mode == 'images':
                     cv2.imwrite(save_path, im0)
                 else:
