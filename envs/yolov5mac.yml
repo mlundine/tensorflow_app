@@ -1,4 +1,4 @@
-name: yolov5cpu
+name: yolov5mac
 channels:
   - pytorch
   - defaults

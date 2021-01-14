@@ -46,7 +46,7 @@ import gdal_functions_app as gdfa
 import object_detection_tf
 import object_detection_real_time
 import object_detection_screen
-import object_detection_window
+#import object_detection_window
 from PIL.ImageQt import ImageQt
 import matplotlib.pyplot as plt
 global yolotrain
@@ -367,7 +367,7 @@ class Window(QMainWindow):
                 weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
                 if weights:
                     #weights, source, conf, project
-                    cmd0 = 'activate yolov5 & '
+                    cmd0 = 'activate yolov5mac & '
                     cmd1 = 'python ' + yolodetect + ' --weights '
                     cmd2 = weights + ' --source ' + fileName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --img-size ' + str(ImgSize) + ' --save-txt --save-conf'
                     os.system(cmd0 + cmd1 + cmd2)
@@ -414,7 +414,7 @@ class Window(QMainWindow):
                 options |= QFileDialog.DontUseNativeDialog
                 weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
                 if weights:
-                    cmd0 = 'activate yolov5 & '
+                    cmd0 = 'activate yolov5mac & '
                     cmd1 = 'python ' + yolodetect + ' --weights '
                     cmd2 = weights + ' --source ' + folderName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --img-size ' + str(ImgSize) + ' --save-txt --save-conf'
                     os.system(cmd0 + cmd1 + cmd2)
@@ -436,7 +436,7 @@ class Window(QMainWindow):
             options |= QFileDialog.DontUseNativeDialog
             weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
             if weights:
-                cmd0 = 'activate yolov5 & '
+                cmd0 = 'activate yolov5mac & '
                 cmd1 = 'python ' + yolodetect + ' --weights '
                 cmd2 = weights + ' --source ' + '0' + ' --conf ' + str(thresh) + ' --project ' + yolo_dir
                 os.system(cmd0 + cmd1 + cmd2)
@@ -788,15 +788,15 @@ class Window(QMainWindow):
         heightInt.setValue(800)
         heightInt.show()
 
-        windowGrabber = QPushButton('Window Capture', self)
-        windowGrabber.resize(bw1,bw1)
-        windowGrabber.move(int(1.5*bw1), int(5.1*bw1))
-        windowGrabber.show()
+        #windowGrabber = QPushButton('Window Capture', self)
+        #windowGrabber.resize(bw1,bw1)
+        #windowGrabber.move(int(1.5*bw1), int(5.1*bw1))
+        #windowGrabber.show()
 
-        windowName = QLineEdit(self)
-        windowName.move(int(2.5*bw1), int(5.1*bw1))
-        windowName.resize(bw1,int(bw1/2))
-        windowName.show()
+        #windowName = QLineEdit(self)
+        #windowName.move(int(2.5*bw1), int(5.1*bw1))
+        #windowName.resize(bw1,int(bw1/2))
+        #windowName.show()
 
         if modelButton.currentText()=='Yolov5':
             windowGrabber.setEnabled(False)

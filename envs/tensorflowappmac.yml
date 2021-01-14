@@ -1,0 +1,25 @@
+name: tensorflowappmac
+channels:
+  - defaults
+dependencies:
+  - python=3.7
+  - numpy
+  - matplotlib
+  - pillow
+  - gdal
+  - pyqt
+  - protobuf
+  - pandas
+  - pip:
+    - contextlib2
+    - cython
+    - lxml
+    - mss
+    - opencv-python
+    - pyautogui
+    - pyshp
+    - scipy
+    - seaborn
+    - sklearn
+    - tensorflow==1.13.1
+
