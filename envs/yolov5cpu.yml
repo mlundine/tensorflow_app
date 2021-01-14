@@ -1,0 +1,21 @@
+name: yolov5cpu
+channels:
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.8
+  - pip
+  - conda
+  - matplotlib
+  - numpy
+  - Pillow
+  - PyYAML
+  - scipy
+  - tensorboard
+  - pytorch
+  - torchvision
+  - tqdm
+  - seaborn
+  - pandas
+  - pip:
+    - opencv-python

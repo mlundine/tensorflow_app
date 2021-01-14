@@ -12,17 +12,17 @@ Download this repository, unzip it somewhere on your device, with the name "tens
 
 There are two conda environments containing all of the needed package versions located in tensorflow_app/envs.
 
-The first one to use is tensorflowappgpu.yml.
+The first one to use is tensorflowappgpu.yml or tensorflowappcpu.yml for macs and for the cpu version.
 
 Open up Anaconda prompt on Windows or terminal on macs and run:
 
 cd wherever_you_placed_it/tensorflow_app/envs
 
-conda env create --file tensorflowappgpu.yml
+conda env create --file tensorflowappgpu.yml  or conda env create --file tensorflowappcpu.yml
 
-conda env create --file yolov5.yml
+conda env create --file yolov5.yml or conda env create --file yolov5cpu
 
-conda activate tensorflowappgpu
+conda activate tensorflowappgpu or conda activate tensorflowappcpu
 
 cd wherever_you_placed_it/tensoflow_app/gui
 
