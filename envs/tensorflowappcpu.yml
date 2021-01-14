@@ -21,6 +21,6 @@ dependencies:
     - pyshp
     - scipy
     - seaborn
-    - sklearn
+    - scikit-learn
     - tensorflow==1.13.1
 
