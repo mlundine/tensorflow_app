@@ -574,7 +574,7 @@ class Window(QMainWindow):
     def setup_data_button(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        folderName = str(QFileDialog.getExistingDirectory(self, "Select jpeg image directory"))
+        folderName = str(QFileDialog.getExistingDirectory(self, "Select jpeg or png image directory"))
         if folderName:
             dtf.randomize_images(folderName, train_dir, test_dir)
     

@@ -152,7 +152,7 @@ def pyshp_geobox_to_shapefiles(inFile, outFile):
         box.record(score, label)
 
 def randomize_images(folder, train_path, test_path):
-    types = ('/*.jpg', '/*.jpeg')
+    types = ('/*.jpg', '/*.jpeg', '/*.png')
     image_list = []
     for ext in types:
         for im in glob.glob(folder + ext):

@@ -45,7 +45,7 @@ import detection_functions_app_mac as dtf
 import gdal_functions_app as gdfa
 import object_detection_tf
 import object_detection_real_time
-import object_detection_screen
+#import object_detection_screen
 #import object_detection_window
 from PIL.ImageQt import ImageQt
 import matplotlib.pyplot as plt
@@ -146,7 +146,7 @@ class Window(QMainWindow):
                     #TODO epochs slider
                     epochs = str(epochSlider)
                     img_size = str(imSlider)
-                    cmd0 = r'activate yolov5 & '
+                    cmd0 = r'conda activate yolov5mac & '
                     cmd1 = r'python ' + yolotrain + ' --weights '
                     cmd2 = weights + ' --data ' + data + ' --epochs ' + str(epochs) + ' --batch-size ' + str(batch) + ' --project ' + yolo_dir + ' --img-size ' + img_size
                     os.system(cmd0 + cmd1 + cmd2)
@@ -155,7 +155,7 @@ class Window(QMainWindow):
             #main(weights, data, epochs, batch_size, project)
             
 ##            cd = 'cd C:/tensorflow_app/yolov5 & '
-##            cmd0 = 'activate yolov5 &'
+##            cmd0 = 'source activate yolov5mac &'
 ##            cmd1 = 'python C:/tensorflow_app/yolov5/train.py --img 640 --batch 5 --epochs 20 --data C:/tensorflow_app/gui/euchre/euchre.yaml'
 ##            cmd2 = ' --weights yolov5s.pt'
 ##            os.system(cd+cmd0+cmd1+cmd2)
@@ -367,7 +367,7 @@ class Window(QMainWindow):
                 weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
                 if weights:
                     #weights, source, conf, project
-                    cmd0 = 'activate yolov5mac & '
+                    cmd0 = 'source activate yolov5mac & '
                     cmd1 = 'python ' + yolodetect + ' --weights '
                     cmd2 = weights + ' --source ' + fileName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --img-size ' + str(ImgSize) + ' --save-txt --save-conf'
                     os.system(cmd0 + cmd1 + cmd2)
@@ -414,7 +414,7 @@ class Window(QMainWindow):
                 options |= QFileDialog.DontUseNativeDialog
                 weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
                 if weights:
-                    cmd0 = 'activate yolov5mac & '
+                    cmd0 = 'source activate yolov5mac & '
                     cmd1 = 'python ' + yolodetect + ' --weights '
                     cmd2 = weights + ' --source ' + folderName + ' --conf ' + str(thresh) + ' --project ' + yolo_dir + ' --img-size ' + str(ImgSize) + ' --save-txt --save-conf'
                     os.system(cmd0 + cmd1 + cmd2)
@@ -436,7 +436,7 @@ class Window(QMainWindow):
             options |= QFileDialog.DontUseNativeDialog
             weights, _ = QFileDialog.getOpenFileName(self,"Select Weights", "","All Files (*);;Weights (*.pt)", options=options)
             if weights:
-                cmd0 = 'activate yolov5mac & '
+                cmd0 = 'source activate yolov5mac & '
                 cmd1 = 'python ' + yolodetect + ' --weights '
                 cmd2 = weights + ' --source ' + '0' + ' --conf ' + str(thresh) + ' --project ' + yolo_dir
                 os.system(cmd0 + cmd1 + cmd2)
@@ -788,15 +788,15 @@ class Window(QMainWindow):
         heightInt.setValue(800)
         heightInt.show()
 
-        #windowGrabber = QPushButton('Window Capture', self)
-        #windowGrabber.resize(bw1,bw1)
-        #windowGrabber.move(int(1.5*bw1), int(5.1*bw1))
-        #windowGrabber.show()
+        windowGrabber = QPushButton('Window Capture', self)
+        windowGrabber.resize(bw1,bw1)
+        windowGrabber.move(int(1.5*bw1), int(5.1*bw1))
+        windowGrabber.show()
 
-        #windowName = QLineEdit(self)
-        #windowName.move(int(2.5*bw1), int(5.1*bw1))
-        #windowName.resize(bw1,int(bw1/2))
-        #windowName.show()
+        windowName = QLineEdit(self)
+        windowName.move(int(2.5*bw1), int(5.1*bw1))
+        windowName.resize(bw1,int(bw1/2))
+        windowName.show()
 
         if modelButton.currentText()=='Yolov5':
             windowGrabber.setEnabled(False)

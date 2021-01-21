@@ -2,7 +2,7 @@ name: tensorflowappgpu
 channels:
   - defaults
 dependencies:
-  - python=3.7
+  - python=3.7.9
   - numpy
   - matplotlib
   - pillow
