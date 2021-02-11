@@ -6,36 +6,43 @@
 
 **By: Mark Lundine**
 
-**Setting Up with Anaconda (has yolov5 capabilities)**
+# Ia). Setting Up with Anaconda (has yolov5 capabilities)
 
 Download this repository, unzip it somewhere on your device, with the name "tensorflow_app", not "tensorflow_app-master".
 
 There are two conda environments containing all of the needed package versions located in tensorflow_app/envs.
 
-The first one to use is tensorflowappgpu.yml or tensorflowappmac.yml for macs or tensorflowappcpu for the cpu version.
+The first one to use is tensorflowappgpu.yml for the GPU version or tensorflowappcpu.yml for the CPU (no Yolov5) version.
 
 Open up Anaconda prompt on Windows or terminal on macs and run:
 
 cd wherever_you_placed_it/tensorflow_app/envs
 
-conda env create --file tensorflowappgpu.yml  or conda activate tensorflowappmac or conda env create --file tensorflowappcpu.yml
+For GPU users:
 
-conda env create --file yolov5.yml or conda env create --file yolov5mac
+conda env create --file tensorflowappgpu.yml
 
-conda activate tensorflowappgpu or conda activate tensorflowappmac or conda activate tensorflowappcpu
+conda env create --file yolov5.yml
+
+conda activate tensorflowappgpu 
+
+For CPU users:
+
+conda env create --file tensorflowappcpu.yml
+
+conda activate tensorflowappcpu
+
+# Running the GUI
 
 cd wherever_you_placed_it/tensoflow_app/gui
 
-python Lundine_gui_new.py  (On Windows)
-
-python Lundine_gui_new_mac.py   (On Macs)
+python Lundine_gui_new.py  
 
 Then the GUI will run.
 
 Now go to downloading pretrained tensorflow models, unless you only want to make a yolov5 model, then go to Making a New Project.
 
-
-**I. Installation and Setup for Executable (No yolov5 capabilities)**
+# Ib). Installation and Setup for Executable (No yolov5 capabilities)
 
 Download this repository, and unzip it to your C-Drive, with the name "tensorflow_app".
 
@@ -47,8 +54,7 @@ To start the app, go to C:/tensorflow_app/gui and double click on TensorflowAppl
 
 After a few seconds (or even a minute, give it some time, it has a lot of stuff to unpack and your antivirus might be checking it), the GUI will appear.
 
-
-**Downloading Pretrained Tensorflow Models**
+# II. Downloading Pretrained Tensorflow Models
 
 In a web browser, go to [tensorflow model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md).
 
@@ -64,9 +70,7 @@ ssd_mobilenet_v1_ppn_coco
 
 Use 7-zip to unzip these files into C:\tensorflow_app\models\research\object_detection
 
-
-**Making a New Project**
-
+# III. Making a New Project
 
 ![GUI Home](/read_me_images/GUI_home.PNG)
 
@@ -87,7 +91,7 @@ You can choose which model you would like to train on.  Faster RCNN and SSD Mobi
 
 ![modelTypes](/read_me_images/GUI_home_models.PNG)
 
-**II. Annotating**
+# IV. Annotating
 
 ![Annotating](/read_me_images/annotating_gui.PNG)
 
@@ -105,7 +109,7 @@ If you are trying to use Mask RCNN, you will also need to make png masks of your
 
 In the future I will make some functions that can automate making the mask annotations.  
 
-**III. Training**
+# V. Training
 
 **Setting Up Yolo Training**
 
@@ -199,7 +203,7 @@ If you want to resume yolo training, just choose the last.pt as the weights file
 **Training e)**
 In the /frcnn_training folder, you will start to see checkpoint files appear.  These will be updated every couple of minutes.  Try to train for at least 40,000 steps.  This might take a full day.  Once you see it has trained for at least 40,000 steps, quit the GUI.  You can do this by hitting the X in the top right, and then let Windows shut the program down.  Go back to the /frcnn_training folder and find the checkpoint file with the highest number. Remember this number. Go back to the GUI, and change the slider value to that number and then hit export inference graph. Once this is done, hit Exit in the GUI. Then hit the Implementation button.
 
-**IV. Implementation**
+# VI. Implementation
 
 
 ![Implementation](/read_me_images/implementation.PNG)
@@ -235,7 +239,7 @@ The screen portion and window capture functions are not available for Yolo model
 
 Now you can hit Exit, and then go to Output Results.
 
-**V. Output Results**
+# VII. Output Results
 
 
 ![Ouputs](/read_me_images/outputresults.PNG)
@@ -282,7 +286,7 @@ The results folder looks like this:
 ![resultFolder](/read_me_images/results_folder.png)
 
 
-**VI. Libaries used**
+# VIII. Libaries used**
 
 Standard Python library that comes with Anaconda Python 3 installation
 

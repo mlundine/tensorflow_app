@@ -338,7 +338,7 @@ def detection_function_mask(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJE
         image_list = []
         types = ['/*.jpg', '/*jpeg']
         for ext in types:
-            for imDude in glob.glob(path_to_images + ext):
+            for imDude in glob.glob(PATH_TO_IMAGES + ext):
                 image_list.append(imDude)
         for file in image_list:        
             image = cv2.imread(file)
@@ -357,7 +357,7 @@ def detection_function_mask(BATCH, PATH_TO_IMAGES, THRESHOLD, NUM_CLASSES, PROJE
                                                                line_thickness=8,
                                                                min_score_thresh=THRESHOLD)
 
-            image_name = os.path.splitext(os.path.basename(PATH_TO_IMAGES))[0]
+            image_name = os.path.splitext(os.path.basename(file))[0]
             savePath = os.path.join(PATH_TO_SAVE_IMAGES, image_name + '.jpeg')
             cv2.imwrite(savePath, image)
 
