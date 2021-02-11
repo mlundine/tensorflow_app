@@ -6,6 +6,10 @@
 
 **By: Mark Lundine**
 
+**Read the guide thoroughly before use.  If you have issues with installing packages with the environemnt file try downloading them manually.**
+
+**Under Releases, you can run tensorflow models from an the latest executable on a Windows machine.**
+
 # Ia). Setting Up with Anaconda (has yolov5 capabilities)
 
 Download this repository, unzip it somewhere on your device, with the name "tensorflow_app", not "tensorflow_app-master".
