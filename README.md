@@ -290,7 +290,7 @@ The results folder looks like this:
 ![resultFolder](/read_me_images/results_folder.png)
 
 
-# VIII. Libaries used**
+# VIII. Libaries used
 
 Standard Python library that comes with Anaconda Python 3 installation
 
