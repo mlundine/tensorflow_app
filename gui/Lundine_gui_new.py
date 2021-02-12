@@ -82,7 +82,7 @@ class Window(QMainWindow):
         
 
         self.setWindowTitle("TensorFlow Object Detection GUI")
-        self.setGeometry(50, 50, 10 + int(screenWidth/2), 10 + int(screenHeight/2))
+        self.setGeometry(50, 50, 30 + int(screenWidth/2), 30 + int(screenHeight/2))
 
         self.home()
 
@@ -176,16 +176,18 @@ class Window(QMainWindow):
     ## downloads all of the necessary libraries and makes tensorflow1
     ## and gdal1 anaconda envs, once clicked, setup is disabled and check setup is enabled
     def setup_button(self, button_item, goButton):
-        goButton.hide()
+        #goButton.hide()
         if button_item == 'New Project':
-            name_widget = QLineEdit(self)
-            name_widget.move(bw1,int(1.5*bw1))
-            name_widget.resize(bw1,bw1/2)
-            name_widget.show()
-            ok_button = QPushButton('OK', self)
-            ok_button.move(int(2*bw1),int(1.5*bw1))
-            ok_button.resize(int(bw1/2),int(bw1/2))
-            ok_button.show()
+            name_widget = QLineEdit()
+            self.vbox.addWidget(name_widget, 1, 2)
+            #name_widget.move(bw1,int(1.5*bw1))
+            #name_widget.resize(bw1,bw1/2)
+            #name_widget.show()
+            ok_button = QPushButton('OK')
+            #ok_button.move(int(2*bw1),int(1.5*bw1))
+            #ok_button.resize(int(bw1/2),int(bw1/2))
+            #ok_button.show()
+            self.vbox.addWidget(ok_button, 1, 3)
             ok_button.clicked.connect(lambda: self.setup_button2(name_widget.text(), ok_button, name_widget))
         else:
             options = QFileDialog.Options()
@@ -200,10 +202,16 @@ class Window(QMainWindow):
     
     
     def setup_button2(self, project_name, okBut=None, name_line=None):
-        topName = QLabel('Project: ' + project_name, self)
-        topName.resize(int(2*bw1),int(bw1/4))
-        topName.move(int(bw1*4),0)
-        topName.show()
+        global topName
+        try:
+            topName.hide()
+        except:
+            pass
+        
+        topName = QLabel('Project: ' + project_name)
+        #topName.resize(int(2*bw1),int(bw1/4))
+        #topName.move(int(bw1*4),0)
+        self.vbox.addWidget(topName, 0, 2)
         
         if name_line != None:
             name_line.hide()
@@ -581,30 +589,35 @@ class Window(QMainWindow):
     ## Main window buttons
     ## All the functions below are butttons that contain more buttons
     def annotating_button(self, modelButton):
-        convertImages = QPushButton('Covert Geotiffs to JPEGS (single band)', self)
-        convertImages.resize(int(bw1*4),bw1)
-        convertImages.move(int(3*bw1),bw1)
-        convertImages.show()
+        convertImages = QPushButton('Covert Geotiffs to JPEGS (single band)')
+        #convertImages.resize(int(bw1*4),bw1)
+        #convertImages.move(int(3*bw1),bw1)
+        #convertImages.show()
+        self.vbox.addWidget(convertImages, 2, 1)
         
-        convertImages2 = QPushButton('Convert Geotiffs to JPEGS (RGB)', self)
-        convertImages2.resize(int(bw1*4),bw1)
-        convertImages2.move(int(3*bw1),2*bw1)
-        convertImages2.show()
+        convertImages2 = QPushButton('Convert Geotiffs to JPEGS (RGB)')
+        #convertImages2.resize(int(bw1*4),bw1)
+        #convertImages2.move(int(3*bw1),2*bw1)
+        #convertImages2.show()
+        self.vbox.addWidget(convertImages2, 3, 1)
         
-        setup_data = QPushButton('Set up training and test data', self)
-        setup_data.resize(int(bw1*4),bw1)
-        setup_data.move(int(3*bw1),3*bw1)
-        setup_data.show()
+        setup_data = QPushButton('Set up training and test data')
+        #setup_data.resize(int(bw1*4),bw1)
+        #setup_data.move(int(3*bw1),3*bw1)
+        #setup_data.show()
+        self.vbox.addWidget(setup_data, 4, 1)
         
-        launch_labelimg = QPushButton('Launch Labelimg', self)
-        launch_labelimg.resize(int(bw1*4),bw1)
-        launch_labelimg.move(int(3*bw1),4*bw1)
-        launch_labelimg.show()
+        launch_labelimg = QPushButton('Launch Labelimg')
+        #launch_labelimg.resize(int(bw1*4),bw1)
+        #launch_labelimg.move(int(3*bw1),4*bw1)
+        #launch_labelimg.show()
+        self.vbox.addWidget(launch_labelimg, 5, 1)
         
-        exitFunc = QPushButton('Exit', self)
-        exitFunc.resize(int(bw1*4),bw1)
-        exitFunc.move(int(3*bw1),5*bw1)
-        exitFunc.show()
+        exitFunc = QPushButton('Exit')
+        #exitFunc.resize(int(bw1*4),bw1)
+        #exitFunc.move(int(3*bw1),5*bw1)
+        #exitFunc.show()
+        self.vbox.addWidget(exitFunc, 6, 1)
         
         buttons = [convertImages, convertImages2, setup_data, launch_labelimg, exitFunc]
         
@@ -616,70 +629,79 @@ class Window(QMainWindow):
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
         
     def training_button(self, modelButton):
-        convertAnnotations = QPushButton('1. Convert Annotations to TfRecords or Yolo Records', self)
-        convertAnnotations.resize(int(bw1*4),bw1)
-        convertAnnotations.move(int(3*bw1),bw1)
-        convertAnnotations.show()
+        convertAnnotations = QPushButton('1. Convert Annotations to TfRecords or Yolo Records')
+        #convertAnnotations.resize(int(bw1*4),bw1)
+        #convertAnnotations.move(int(3*bw1),bw1)
+        #convertAnnotations.show()
+        self.vbox.addWidget(convertAnnotations, 2, 1)
         
-        makeLabelMap = QPushButton('2. Make Label Map (skip for yolo)', self)
-        makeLabelMap.resize(int(bw1*4),bw1)
-        makeLabelMap.move(int(3*bw1),2*bw1)
-        makeLabelMap.show()
+        makeLabelMap = QPushButton('2. Make Label Map (skip for yolo)')
+        #makeLabelMap.resize(int(bw1*4),bw1)
+        #makeLabelMap.move(int(3*bw1),2*bw1)
+        #makeLabelMap.show()
+        self.vbox.addWidget(makeLabelMap, 3, 1)
         
-        configTraining = QPushButton('3. Configure Training (skip for yolo)', self)
-        configTraining.resize(int(bw1*4),bw1)
-        configTraining.move(int(3*bw1),3*bw1)
-        configTraining.show()
+        configTraining = QPushButton('3. Configure Training (skip for yolo)')
+        #configTraining.resize(int(bw1*4),bw1)
+        #configTraining.move(int(3*bw1),3*bw1)
+        #configTraining.show()
+        self.vbox.addWidget(configTraining, 4, 1)
         
-        startTraining = QPushButton('4. Start Training', self)
-        startTraining.resize(int(bw1*4),bw1)
-        startTraining.move(int(3*bw1),bw1*4)
-        startTraining.show()
+        startTraining = QPushButton('4. Start Training')
+        #startTraining.resize(int(bw1*4),bw1)
+        #startTraining.move(int(3*bw1),bw1*4)
+        #startTraining.show()
+        self.vbox.addWidget(startTraining, 5, 1)
         
-        exportGraph = QPushButton('5. Export Inference Graph (skip for yolo)', self)
-        exportGraph.resize(int(bw1*4),bw1)
-        exportGraph.move(int(3*bw1),5*bw1)
-        exportGraph.show()
+        exportGraph = QPushButton('5. Export Inference Graph (skip for yolo)')
+        #exportGraph.resize(int(bw1*4),bw1)
+        #exportGraph.move(int(3*bw1),5*bw1)
+        #exportGraph.show()
+        self.vbox.addWidget(exportGraph, 6, 1)
         
-        ckptSlider = QSpinBox(self)
+        ckptSlider = QSpinBox()
         ckptSlider.setMinimum(1)
         ckptSlider.setMaximum(100000)
         ckptSlider.setValue(40000)
-        ckptSlider.move(int(7*bw1),int(5.35*bw1))
-        ckptSlider.show()
+        #ckptSlider.move(int(7*bw1),int(5.35*bw1))
+        #ckptSlider.show()
+        self.vbox.addWidget(ckptSlider, 6, 2)
         
-        exitFunc = QPushButton('Exit', self)
-        exitFunc.resize(int(bw1*4),bw1)
-        exitFunc.move(int(3*bw1),6*bw1)
-        exitFunc.show()
+        exitFunc = QPushButton('Exit')
+        #exitFunc.resize(int(bw1*4),bw1)
+        #exitFunc.move(int(3*bw1),6*bw1)
+        #exitFunc.show()
+        self.vbox.addWidget(exitFunc, 7, 1)
         
-        yoloImgLabel = QLabel('Max Image\nDimension', self)
-        yoloImgLabel.resize(bw1,int(bw1/4))
-        yoloImgLabel.move(int(7*bw1),int(4.2*bw1))
-        
+        yoloImgLabel = QLabel('Max Image\nDimension')
+        #yoloImgLabel.resize(bw1,int(bw1/4))
+        #yoloImgLabel.move(int(7*bw1),int(4.2*bw1))
+        self.vbox.addWidget(yoloImgLabel, 4, 3)
 
-        yoloEpochLabel = QLabel('Epochs', self)
-        yoloEpochLabel.resize(bw1,int(bw1/4))
-        yoloEpochLabel.move(int(7.8*bw1),int(4.2*bw1))
-        
+        yoloEpochLabel = QLabel('Epochs')
+        #yoloEpochLabel.resize(bw1,int(bw1/4))
+        #yoloEpochLabel.move(int(7.8*bw1),int(4.2*bw1))
+        self.vbox.addWidget(yoloEpochLabel, 4, 4)
                 
-        yoloImgSlider = QSpinBox(self)
+        yoloImgSlider = QSpinBox()
         yoloImgSlider.setMinimum(1)
         yoloImgSlider.setMaximum(100000)
         yoloImgSlider.setValue(640)
-        yoloImgSlider.move(int(7*bw1),int(4.5*bw1))
-
-        yoloEpochSlider = QSpinBox(self)
+        #yoloImgSlider.move(int(7*bw1),int(4.5*bw1))
+        self.vbox.addWidget(yoloImgSlider, 5, 3)
+        
+        yoloEpochSlider = QSpinBox()
         yoloEpochSlider.setMinimum(1)
         yoloEpochSlider.setMaximum(100000)
         yoloEpochSlider.setValue(400)
-        yoloEpochSlider.move(int(7.8*bw1),int(4.5*bw1))
+        #yoloEpochSlider.move(int(7.8*bw1),int(4.5*bw1))
+        self.vbox.addWidget(yoloEpochSlider, 5, 4)
         
-        if str(modelButton.currentText()) == 'Yolov5':
-            yoloImgLabel.show()
-            yoloImgSlider.show()
-            yoloEpochLabel.show()
-            yoloEpochSlider.show()
+        if str(modelButton.currentText()) != 'Yolov5':
+            yoloImgLabel.hide()
+            yoloImgSlider.hide()
+            yoloEpochLabel.hide()
+            yoloEpochSlider.hide()
         buttons = [convertAnnotations, makeLabelMap, configTraining, startTraining, exportGraph, ckptSlider, yoloImgSlider, yoloEpochSlider, yoloImgLabel, yoloEpochLabel, exitFunc]
         
 
@@ -691,122 +713,143 @@ class Window(QMainWindow):
         exitFunc.clicked.connect(lambda: self.exit_buttons(buttons))
         
     def implementation_button(self, modelButton):
-        single_image = QPushButton('Single Image', self)
-        single_image.resize(bw1, bw1)
-        single_image.move(int(bw1*1.5),0)
-        single_image.show()
+        single_image = QPushButton('Single Image')
+        #single_image.resize(bw1, bw1)
+        #single_image.move(int(bw1*1.5),0)
+        #single_image.show()
+        self.vbox.addWidget(single_image, 2, 1)
         
-        batch = QPushButton('Batch of Images', self)
-        batch.resize(bw1, bw1)
-        batch.move(int(bw1*1.5),bw1)
-        batch.show()
-
-        videoCam = QPushButton('Video Camera', self)
-        videoCam.resize(bw1, bw1)
-        videoCam.move(int(bw1*1.5),2*bw1)
-        videoCam.show()
-
-        screenCap = QPushButton('Screen Capture', self)
-        screenCap.resize(bw1, bw1)
-        screenCap.move(int(bw1*1.5),3*bw1)
-        screenCap.show()
+        batch = QPushButton('Batch of Images')
+        #batch.resize(bw1, bw1)
+        #batch.move(int(bw1*1.5),bw1)
+        #batch.show()
+        self.vbox.addWidget(batch, 3, 1)
         
-        threshLab = QLabel('Threshold', self)
-        threshLab.move(int(bw1*1.75),int(4*bw1))
-        threshLab.show()
-        threshSlider = QDoubleSpinBox(self)
-        threshSlider.move(int(bw1*1.5),int(bw1*4.25))
+        videoCam = QPushButton('Video Camera')
+        #videoCam.resize(bw1, bw1)
+        #videoCam.move(int(bw1*1.5),2*bw1)
+        #videoCam.show()
+        self.vbox.addWidget(videoCam, 4, 1)
+        
+        screenCap = QPushButton('Screen Capture')
+        #screenCap.resize(bw1, bw1)
+        #screenCap.move(int(bw1*1.5),3*bw1)
+        #screenCap.show()
+        self.vbox.addWidget(screenCap, 5, 1)
+        
+        threshLab = QLabel('Threshold')
+        #threshLab.move(int(bw1*1.75),int(4*bw1))
+        #threshLab.show()
+        self.vbox.addWidget(threshLab, 6, 1)
+        threshSlider = QDoubleSpinBox()
+        #threshSlider.move(int(bw1*1.5),int(bw1*4.25))
         threshSlider.setMinimum(0.00)
         threshSlider.setMaximum(0.99)
         threshSlider.setValue(0.60)
-        threshSlider.show()
+        #threshSlider.show()
+        self.vbox.addWidget(threshSlider, 7, 1)
 
-        yoloImgLabel = QLabel('Max Image\nDimension', self)
-        yoloImgLabel.resize(bw1,int(bw1/4))
-        yoloImgLabel.move(int(3*bw1),int(4*bw1))
-
-        yoloImgSlider = QSpinBox(self)
+        yoloImgLabel = QLabel('Max Image\nDimension')
+        #yoloImgLabel.resize(bw1,int(bw1/4))
+        #yoloImgLabel.move(int(3*bw1),int(4*bw1))
+        self.vbox.addWidget(yoloImgLabel, 7,2)
+        
+        yoloImgSlider = QSpinBox()
         yoloImgSlider.setMinimum(1)
         yoloImgSlider.setMaximum(100000)
         yoloImgSlider.setValue(640)
-        yoloImgSlider.move(int(3*bw1),int(4.25*bw1))
+        #yoloImgSlider.move(int(3*bw1),int(4.25*bw1))
+        self.vbox.addWidget(yoloImgSlider, 8, 2)
 
-        if str(modelButton.currentText()) == 'Yolov5':
-            yoloImgLabel.show()
-            yoloImgSlider.show()
+        if str(modelButton.currentText()) != 'Yolov5':
+            yoloImgLabel.hide()
+            yoloImgSlider.hide()
         
-        numClassesLab = QLabel('Number of Classes', self)
-        numClassesLab.resize(bw1,int(bw1/4))
-        numClassesLab.move(int(1.6*bw1),int(4.5*bw1))
-        numClassesLab.show()
-        numClasses = QSpinBox(self)
-        numClasses.move(int(bw1*1.5),int(bw1*4.75))
+        numClassesLab = QLabel('Number of Classes')
+        #numClassesLab.resize(bw1,int(bw1/4))
+        #numClassesLab.move(int(1.6*bw1),int(4.5*bw1))
+        #numClassesLab.show()
+        self.vbox.addWidget(numClassesLab, 8, 1)
+        numClasses = QSpinBox()
+        #numClasses.move(int(bw1*1.5),int(bw1*4.75))
         numClasses.setMinimum(1)
-        numClasses.show()
+        #numClasses.show()
+        self.vbox.addWidget(numClasses,9,1)
 
-        topIntLab = QLabel('Top Coord.', self)
-        topIntLab.move(int(2.75*bw1), int(3*bw1))
-        topIntLab.show()
+        topIntLab = QLabel('Top Coord.')
+        #topIntLab.move(int(2.75*bw1), int(3*bw1))
+        #topIntLab.show()
+        self.vbox.addWidget(topIntLab, 5, 2)
         
-        topInt = QSpinBox(self)
-        topInt.move(int(2.5*bw1), int(3.25*bw1))
+        topInt = QSpinBox()
+        #topInt.move(int(2.5*bw1), int(3.25*bw1))
         topInt.setMinimum(0)
         topInt.setMaximum(100)
         topInt.setValue(0)
-        topInt.show()
+        #topInt.show()
+        self.vbox.addWidget(topInt, 6, 2)
         
-        leftIntLab = QLabel('Left Coord.', self)
-        leftIntLab.move(int(3.75*bw1), int(3*bw1))
-        leftIntLab.show()
+        leftIntLab = QLabel('Left Coord.')
+        #leftIntLab.move(int(3.75*bw1), int(3*bw1))
+        #leftIntLab.show()
+        self.vbox.addWidget(leftIntLab, 5, 3)
         
-        leftInt = QSpinBox(self)
-        leftInt.move(int(3.5*bw1),int(3.25*bw1))
+        leftInt = QSpinBox()
+        #leftInt.move(int(3.5*bw1),int(3.25*bw1))
         leftInt.setMinimum(0)
         leftInt.setMaximum(100)
         leftInt.setValue(0)
-        leftInt.show()
+        #leftInt.show()
+        self.vbox.addWidget(leftInt, 6, 3)
         
-        widthIntLab = QLabel('Width', self)
-        widthIntLab.move(int(4.75*bw1), int(3*bw1))
-        widthIntLab.show()
+        widthIntLab = QLabel('Width')
+        #widthIntLab.move(int(4.75*bw1), int(3*bw1))
+        #widthIntLab.show()
+        self.vbox.addWidget(widthIntLab,5,4)
         
-        widthInt = QSpinBox(self)
-        widthInt.move(int(4.5*bw1), int(3.25*bw1))
+        widthInt = QSpinBox()
+        #widthInt.move(int(4.5*bw1), int(3.25*bw1))
         widthInt.setMinimum(100)
         widthInt.setMaximum(1000)
         widthInt.setValue(800)
-        widthInt.show()
+        #widthInt.show()
+        self.vbox.addWidget(widthInt, 6, 4)
         
-        heightIntLab = QLabel('Height', self)
-        heightIntLab.move(int(5.75*bw1),int(3*bw1))
-        heightIntLab.show()
+        heightIntLab = QLabel('Height')
+        #heightIntLab.move(int(5.75*bw1),int(3*bw1))
+        #heightIntLab.show()
+        self.vbox.addWidget(heightIntLab, 5, 5)
         
-        heightInt = QSpinBox(self)
-        heightInt.move(int(5.5*bw1),int(3.25*bw1))
+        heightInt = QSpinBox()
+        #heightInt.move(int(5.5*bw1),int(3.25*bw1))
         heightInt.setMinimum(100)
         heightInt.setMaximum(1000)
         heightInt.setValue(800)
-        heightInt.show()
+        #heightInt.show()
+        self.vbox.addWidget(heightInt, 6, 5)
 
-        windowGrabber = QPushButton('Window Capture', self)
-        windowGrabber.resize(bw1,bw1)
-        windowGrabber.move(int(1.5*bw1), int(5.1*bw1))
-        windowGrabber.show()
-
-        windowName = QLineEdit(self)
-        windowName.move(int(2.5*bw1), int(5.1*bw1))
-        windowName.resize(bw1,int(bw1/2))
-        windowName.show()
-
+        windowGrabber = QPushButton('Window Capture')
+        #windowGrabber.resize(bw1,bw1)
+        #windowGrabber.move(int(1.5*bw1), int(5.1*bw1))
+        #windowGrabber.show()
+        self.vbox.addWidget(windowGrabber, 10, 1)
+        
+        windowName = QLineEdit()
+        #windowName.move(int(2.5*bw1), int(5.1*bw1))
+        #windowName.resize(bw1,int(bw1/2))
+        #windowName.show()
+        self.vbox.addWidget(windowName, 10, 2)
+        
         if modelButton.currentText()=='Yolov5':
             windowGrabber.setEnabled(False)
             screenCap.setEnabled(False)
         else:
             pass
-        exitFunc = QPushButton('Exit', self)
-        exitFunc.resize(bw1, bw1)
-        exitFunc.move(int(bw1*1.5),int(6.1*bw1))
-        exitFunc.show()
+        exitFunc = QPushButton('Exit')
+        #exitFunc.resize(bw1, bw1)
+        #exitFunc.move(int(bw1*1.5),int(6.1*bw1))
+        #exitFunc.show()
+        self.vbox.addWidget(exitFunc, 11, 1)
         
         buttons = [single_image, batch, threshLab, threshSlider, numClassesLab, numClasses, videoCam, screenCap, topIntLab,
                    topInt, leftIntLab, leftInt, widthIntLab, widthInt, heightIntLab, heightInt, windowGrabber, windowName, yoloImgLabel, yoloImgSlider, exitFunc]
@@ -824,30 +867,35 @@ class Window(QMainWindow):
                                                                         
         
     def output_results_button(self, modelButton):
-        getCoords = QPushButton('Get raster coordinates and resolution', self)
-        getCoords.resize(4*bw1,bw1)
-        getCoords.move(3*bw1,bw1)
-        getCoords.show()
+        getCoords = QPushButton('Get raster coordinates and resolution')
+        #getCoords.resize(4*bw1,bw1)
+        #getCoords.move(3*bw1,bw1)
+        #getCoords.show()
+        self.vbox.addWidget(getCoords,2,1)
         
-        convertCoords = QPushButton('Convert detection coordinates to geographic coordinates', self)
-        convertCoords.resize(4*bw1,bw1)
-        convertCoords.move(3*bw1,2*bw1)
-        convertCoords.show()
+        convertCoords = QPushButton('Convert detection coordinates to geographic coordinates')
+        #convertCoords.resize(4*bw1,bw1)
+        #convertCoords.move(3*bw1,2*bw1)
+        #convertCoords.show()
+        self.vbox.addWidget(convertCoords,3,1)
         
-        makeShape = QPushButton('Make Shapefile', self)
-        makeShape.resize(4*bw1,bw1)
-        makeShape.move(3*bw1,3*bw1)
-        makeShape.show()
+        makeShape = QPushButton('Make Shapefile')
+        #makeShape.resize(4*bw1,bw1)
+        #makeShape.move(3*bw1,3*bw1)
+        #makeShape.show()
+        self.vbox.addWidget(makeShape,4,1)
         
-        getPR = QPushButton('Get PR Curve', self)
-        getPR.resize(4*bw1,bw1)
-        getPR.move(3*bw1,4*bw1)
-        getPR.show()
-    
-        exitFunc = QPushButton('Exit', self)
-        exitFunc.resize(4*bw1,bw1)
-        exitFunc.move(3*bw1,5*bw1)
-        exitFunc.show()
+        getPR = QPushButton('Get PR Curve')
+        #getPR.resize(4*bw1,bw1)
+        #getPR.move(3*bw1,4*bw1)
+        #getPR.show()
+        self.vbox.addWidget(getPR, 5, 1)
+        
+        exitFunc = QPushButton('Exit')
+        #exitFunc.resize(4*bw1,bw1)
+        #exitFunc.move(3*bw1,5*bw1)
+        #exitFunc.show()
+        self.vbox.addWidget(exitFunc,6,1)
         
         buttons = [getCoords, convertCoords, makeShape, getPR, exitFunc]
         
@@ -863,42 +911,56 @@ class Window(QMainWindow):
 
     ## This is the main window 
     def home(self):
+        
+        self.scroll = QScrollArea()             # Scroll Area which contains the widgets, set as the centralWidget
+        self.widget = QWidget()                 # Widget that contains the collection of Vertical Box
+        self.vbox = QGridLayout()             # The Vertical Box that contains the Horizontal Boxes of  labels and buttons
+        self.widget.setLayout(self.vbox)
+        
+
         ##button for mask or box
-        maskBox = QComboBox(self)
+        maskBox = QComboBox()
         maskBox.addItem('Faster R-CNN')
         maskBox.addItem('Mask R-CNN')
         maskBox.addItem('SSD Mobilenet')
         maskBox.addItem('Yolov5')
-        maskBox.resize(bw1,int(bw1/2))
-        maskBox.move(0, bw1)
+        #maskBox.resize(bw1,int(bw1/2))
+        #maskBox.move(0, bw1)
+        self.vbox.addWidget(maskBox, 0, 0)
         
         ##Button for set up
-        setUp = QComboBox(self)
+        setUp = QComboBox()
         setUp.addItem('New Project')
         setUp.addItem('Existing Project')
-        setUp.resize(bw1,int(bw1/2))
-        setUp.move(0,int(bw1*1.5))
-        setUpGo = QPushButton('Go', self)
-        setUpGo.resize(int(bw1/4),int(bw1/2))
-        setUpGo.move(bw1,int(1.5*bw1))
+        #setUp.resize(bw1,int(bw1/2))
+        #setUp.move(0,int(bw1*1.5))
+        self.vbox.addWidget(setUp, 1,0)
+        
+        setUpGo = QPushButton('Go')
+        #setUpGo.resize(int(bw1/4),int(bw1/2))
+        #setUpGo.move(bw1,int(1.5*bw1))
+        self.vbox.addWidget(setUpGo, 1, 1)
         
         
-        annotating = QPushButton("1. Annotating", self)
-        annotating.resize(bw1, bw1)
-        annotating.move(0,3*bw1)
+        annotating = QPushButton("1. Annotating")
+        #annotating.resize(bw1, bw1)
+        #annotating.move(0,3*bw1)
+        self.vbox.addWidget(annotating, 2, 0)
         
-        training = QPushButton("2. Training", self)
-        training.resize(bw1, bw1)
-        training.move(0,4*bw1)
+        training = QPushButton("2. Training")
+        #training.resize(bw1, bw1)
+        #training.move(0,4*bw1)
+        self.vbox.addWidget(training, 3, 0)
         
-        implementation = QPushButton("3. Implementation", self)
-        implementation.resize(bw1, bw1)
-        implementation.move(0,5*bw1)
+        implementation = QPushButton("3. Inference")
+        #implementation.resize(bw1, bw1)
+        #implementation.move(0,5*bw1)
+        self.vbox.addWidget(implementation, 4,0)
         
-        output_results = QPushButton("4. Output Results", self)
-        output_results.resize(bw1, bw1)
-        output_results.move(0,6*bw1)
-        
+        output_results = QPushButton("4. Output Results")
+        #output_results.resize(bw1, bw1)
+        #output_results.move(0,6*bw1)
+        self.vbox.addWidget(output_results, 5, 0)
         
         ##Actions
         setUpGo.clicked.connect(lambda: self.setup_button(str(setUp.currentText()), setUpGo))
@@ -908,12 +970,20 @@ class Window(QMainWindow):
         output_results.clicked.connect(lambda: self.output_results_button(maskBox))
         
 
-        self.show()
+        
+        self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setWidget(self.widget)
+
+        self.setCentralWidget(self.scroll)
+
 
 ## Function outside of the class to run the app   
 def run():
     app = QApplication(sys.argv)
     GUI = Window()
+    GUI.show()
     sys.exit(app.exec_())
 
 ## Calling run to run the app
