@@ -17,7 +17,7 @@ dependencies:
     - mss
     - opencv-python
     - pyautogui
-    - win32gui
+    - pywin32
     - pyshp
     - scipy
     - seaborn
